@@ -11,8 +11,7 @@ const Footer = () => (
             <span className="logo-text" style={{ color: 'white', marginLeft: '-1.5rem' }}>SMA</span>
           </div>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9375rem', lineHeight: '1.8' }}>
-            Évocation spirituelle par l'excellence chorale. 
-            Une communauté lyonnaise engagée dans le rayonnement de la musique sacrée.
+            Une chorale au service de la liturgie et de la prière, dédiée à la beauté du chant sacré.
           </p>
         </div>
 

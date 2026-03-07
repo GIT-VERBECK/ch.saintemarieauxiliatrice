@@ -27,9 +27,10 @@ const Header = () => {
               ))}
             </nav>
 
+            
             <div className="actions-group">
-              <button className="btn btn-ghost">Connexion Membre</button>
-              <button className="btn btn-primary">Faire un Don</button>
+              <a href="/register" className="btn btn-ghost">Créer un compte</a>
+              <a href="/register" className="btn btn-primary">Se Connecter</a>
             </div>
 
             <button 
@@ -72,8 +73,8 @@ const Header = () => {
             </nav>
 
             <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <button className="btn btn-primary" style={{ width: '100%' }}>Connexion Membre</button>
-              <button className="btn btn-ghost" style={{ width: '100%' }}>Faire un Don</button>
+              <a href="/register" className="btn btn-ghost">Créer un compte</a>
+              <a href="/register" className="btn btn-primary">Se Connecter</a>
             </div>
           </motion.div>
         )}
