@@ -4,6 +4,16 @@ This repository contains the **frontend application** of the digital platform us
 
 The application provides a modern web interface allowing choir members and administrators to manage the choir's activities, liturgical planning, and musical resources.
 
+# Capture d'écran
+
+- Page d'accueil
+
+<img src="/src/docs/images/cap1.png" alt="Capture d'écran" width="100%"/>
+<img src="/src/docs/images/cap2.png" alt="Capture d'écran" width="100%"/>
+<img src="/src/docs/images/cap3.png" alt="Capture d'écran" width="100%"/>
+ 
+<img src="/src/docs/images/cap4.png" alt="Capture d'écran" width="100%"/>
+
 ## Features
 
 - Dashboard overview of choir activities
@@ -20,3 +30,13 @@ The application provides a modern web interface allowing choir members and admin
 - React / Next.js
 - TailwindCSS
 - Axios
+
+## Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
+```
