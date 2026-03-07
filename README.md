@@ -4,7 +4,7 @@ This repository contains the **frontend application** of the digital platform us
 
 The application provides a modern web interface allowing choir members and administrators to manage the choir's activities, liturgical planning, and musical resources.
 
-#Capture d'écran
+# Capture d'écran
 
 - Page d'accueil
 
