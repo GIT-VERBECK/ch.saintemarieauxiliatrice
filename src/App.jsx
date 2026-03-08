@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Register from './pages/Register';
+import Login from './pages/Login';
 import { Toaster } from 'react-hot-toast';
 import './App.css';
 
@@ -25,6 +26,8 @@ function App() {
     switch(currentPath) {
       case '/register':
         return <Register />;
+      case '/login':
+        return <Login />;
       default:
         return <Home />;
     }

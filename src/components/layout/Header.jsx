@@ -30,7 +30,7 @@ const Header = () => {
             
             <div className="actions-group">
               <a href="/register" className="btn btn-ghost">Créer un compte</a>
-              <a href="/register" className="btn btn-primary">Se Connecter</a>
+              <a href="/login" className="btn btn-primary">Se Connecter</a>
             </div>
 
             <button 
@@ -74,7 +74,7 @@ const Header = () => {
 
             <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <a href="/register" className="btn btn-ghost">Créer un compte</a>
-              <a href="/register" className="btn btn-primary">Se Connecter</a>
+              <a href="/login" className="btn btn-primary">Se Connecter</a>
             </div>
           </motion.div>
         )}
