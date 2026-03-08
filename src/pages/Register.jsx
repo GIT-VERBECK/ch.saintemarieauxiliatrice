@@ -25,6 +25,37 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // --- Validation du mot de passe ---
+    const { password } = formData;
+    const errors = [];
+
+    if (password.length < 8) {
+      errors.push("au moins 8 caractères");
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push("une majuscule");
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push("un chiffre");
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      errors.push("un caractère spécial");
+    }
+
+    if (errors.length > 0) {
+      toast.error(`Le mot de passe doit contenir : ${errors.join(', ')}.`, {
+        duration: 5000,
+        style: {
+          background: '#ef4444',
+          color: '#fff',
+          borderRadius: '12px',
+        }
+      });
+      return;
+    }
+    // ---------------------------------
+
     setIsLoading(true);
     
     // Simuler une requête réseau de 1.5 seconde pour le côté "Pro"
@@ -143,6 +174,9 @@ const Register = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+              Min. 8 caractères, une majuscule, un chiffre et un symbole.
+            </p>
           </div>
 
           <button 
@@ -156,7 +190,7 @@ const Register = () => {
         </form>
 
         <div className="auth-footer" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <span>Déjà membre ? <a href="/login" onClick={(e) => e.preventDefault()}>Se connecter</a></span>
+          <span>Déjà membre ? <a href="/login">Se connecter</a></span>
           <a href="/" className="back-link">Retour au site</a>
           <br />
         </div>

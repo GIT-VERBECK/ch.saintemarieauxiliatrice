@@ -14,6 +14,14 @@ The application provides a modern web interface allowing choir members and admin
  
 <img src="/src/docs/images/cap4.png" alt="Capture d'écran" width="100%"/>
 
+- Page d'inscription
+
+<img src="/src/docs/images/cap5.png" alt="Capture d'écran" width="100%"/>
+
+- Page de connexion
+
+<img src="/src/docs/images/cap6.png" alt="Capture d'écran" width="100%"/>
+
 ## Features
 
 - Dashboard overview of choir activities
