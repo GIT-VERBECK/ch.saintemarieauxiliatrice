@@ -1,5 +1,5 @@
-import React from 'react';
 import { Music, MapPin, Phone, Mail, Instagram, Youtube } from 'lucide-react';
+import { NAV_LINKS } from '../../data/constants';
 
 const Footer = () => (
   <footer id="contact" className="footer-v3">
@@ -18,10 +18,9 @@ const Footer = () => (
         <div className="footer-col">
           <h5>Navigation</h5>
           <ul className="footer-list">
-            <li><a href="#evenements">Événements</a></li>
-            <li><a href="#partitions">Répertoire</a></li>
-            <li><a href="#chorale">La Chorale</a></li>
-            <li><a href="#contact">Contact</a></li>
+            {NAV_LINKS.map(({ label, href }) => (
+              <li key={label}><a href={href}>{label}</a></li>
+            ))}
           </ul>
         </div>
 
