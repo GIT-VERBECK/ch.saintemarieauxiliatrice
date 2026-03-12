@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import Gallery from './pages/Gallery';
 import { Toaster } from 'react-hot-toast';
 import './App.css';
 
@@ -28,6 +29,8 @@ function App() {
         return <Register />;
       case '/login':
         return <Login />;
+      case '/gallery':
+        return <Gallery />;
       default:
         return <Home />;
     }
