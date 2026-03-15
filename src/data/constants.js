@@ -40,7 +40,7 @@ export const HERO_SLIDES = [
 export const NAV_LINKS = [
   { label: 'Accueil', href: '/' },
   { label: 'Événements', href: '/#evenements' },
-  { label: 'Partitions', href: '/#partitions' },
+  { label: 'Partitions', href: '/partitions' },
   { label: 'Galerie', href: '/gallery' },
   { label: 'Chorale', href: '/#chorale' },
   { label: 'Contact', href: '/#contact' }
@@ -82,5 +82,50 @@ export const GALLERY_IMAGES = [
     url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTThEP27RTz6vFSQ7P0vIhyalU0AD_k7Kc4gA&s",
     title: "Petit Chœur",
     category: "Concerts"
+  }
+];
+
+export const PARTITIONS_DATA = [
+  {
+    id: 1,
+    title: "Messe du Couronnement (Gloria)",
+    composer: "W.A. Mozart",
+    category: "Messe",
+    url: "#"
+  },
+  {
+    id: 2,
+    title: "Ave Verum Corpus",
+    composer: "W.A. Mozart",
+    category: "Motet",
+    url: "#"
+  },
+  {
+    id: 3,
+    title: "Cantique de Jean Racine",
+    composer: "Gabriel Fauré",
+    category: "Cantique",
+    url: "#"
+  },
+  {
+    id: 4,
+    title: "Tollite Hostias",
+    composer: "Camille Saint-Saëns",
+    category: "Noël",
+    url: "#"
+  },
+  {
+    id: 5,
+    title: "Hallelujah (Messie)",
+    composer: "G.F. Handel",
+    category: "Oratorio",
+    url: "#"
+  },
+  {
+    id: 6,
+    title: "Locus Iste",
+    composer: "Anton Bruckner",
+    category: "Motet",
+    url: "#"
   }
 ];
