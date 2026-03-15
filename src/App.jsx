@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Gallery from './pages/Gallery';
+import Partitions from './pages/Partitions';
 import { Toaster } from 'react-hot-toast';
 import './App.css';
 
@@ -31,6 +32,8 @@ function App() {
         return <Login />;
       case '/gallery':
         return <Gallery />;
+      case '/partitions':
+        return <Partitions />;
       default:
         return <Home />;
     }
