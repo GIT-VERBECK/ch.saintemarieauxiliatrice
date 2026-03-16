@@ -42,8 +42,7 @@ export const NAV_LINKS = [
   { label: 'Événements', href: '/#evenements' },
   { label: 'Partitions', href: '/partitions' },
   { label: 'Galerie', href: '/gallery' },
-  { label: 'Chorale', href: '/#chorale' },
-  { label: 'Contact', href: '/#contact' }
+  { label: 'Contact', href: '/contact' }
 ];
 
 export const GALLERY_IMAGES = [
