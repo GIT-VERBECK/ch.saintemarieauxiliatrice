@@ -4,6 +4,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Gallery from './pages/Gallery';
 import Partitions from './pages/Partitions';
+import Contact from './pages/Contact';
 import { Toaster } from 'react-hot-toast';
 import './App.css';
 
@@ -34,6 +35,8 @@ function App() {
         return <Gallery />;
       case '/partitions':
         return <Partitions />;
+      case '/contact':
+        return <Contact />;
       default:
         return <Home />;
     }

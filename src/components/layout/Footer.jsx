@@ -44,7 +44,7 @@ const Footer = () => (
       </div>
 
       <div className="footer-bottom">
-        <span>© 2024 Chorale Sainte Marie Auxiliatrice. Goma.</span>
+        <span>© 2026 Chorale Sainte Marie Auxiliatrice. Goma.</span>
         <div style={{ display: 'flex', gap: '24px' }}>
           <a href="#">Confidentialité</a>
           <a href="#">Mentions Légales</a>
