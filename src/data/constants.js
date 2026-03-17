@@ -54,13 +54,13 @@ export const GALLERY_IMAGES = [
   },
   {
     id: 2,
-    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHsIx4pRVmke_VioHThwfa5l655lb0dk1Ucw&s",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWNu2M7NpIN7rUc9bBeiQ5-rudazWI0-D_yg&s",
     title: "La Joie du Chant",
     category: "Portraits"
   },
   {
     id: 3,
-    url: "https://img.freepik.com/vecteurs-premium/professions-creatives-travailleurs-industrie-art_229548-4618.jpg",
+    url: "https://ligueo.ligueparis.org/ani/public/front_sub_categories/3077/regular/chorale.PNG?1651482697",
     title: "Accompagnement",
     category: "Orchestre"
   },
