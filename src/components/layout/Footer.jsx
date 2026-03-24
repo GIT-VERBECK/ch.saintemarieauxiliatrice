@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Music, MapPin, Phone, Mail, Instagram, Youtube } from 'lucide-react';
 import { NAV_LINKS } from '../../data/constants';
 
@@ -6,10 +7,10 @@ const Footer = () => (
     <div className="container">
       <div className="footer-grid">
         <div className="footer-col">
-          <div className="logo-group" style={{ marginBottom: '24px' }}>
+          <Link to="/" className="logo-group" style={{ marginBottom: '24px', display: 'flex', alignItems: 'center' }}>
             <img src="/src/assets/images/icon2.png" alt="Logo" width={66} height={43} style={{ borderRadius: 'var(--radius-md)',marginLeft: '-.9rem' }}/>
             <span className="logo-text" style={{ color: 'white', marginLeft: '-1.5rem' }}>SMA</span>
-          </div>
+          </Link>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9375rem', lineHeight: '1.8' }}>
             Une chorale au service de la liturgie et de la prière, dédiée à la beauté du chant sacré.
           </p>
@@ -18,16 +19,25 @@ const Footer = () => (
         <div className="footer-col">
           <h5>Navigation</h5>
           <ul className="footer-list">
-            {NAV_LINKS.map(({ label, href }) => (
-              <li key={label}><a href={href}>{label}</a></li>
-            ))}
+            {NAV_LINKS.map(({ label, href }) => {
+              const isExternal = href.startsWith('http') || href.startsWith('/#');
+              return (
+                <li key={label}>
+                  {isExternal ? (
+                    <a href={href}>{label}</a>
+                  ) : (
+                    <Link to={href}>{label}</Link>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
 
         <div className="footer-col">
           <h5>Communauté</h5>
           <ul className="footer-list">
-            <li><a href="#">Espace Membres</a></li>
+            <li><Link to="/register">Espace Membres</Link></li>
             <li><a href="#">Donations</a></li>
             <li><a href="#">Auditions</a></li>
           </ul>

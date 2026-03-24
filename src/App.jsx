@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -10,42 +11,23 @@ import './App.css';
 
 /**
  * Composant racine de l'application
- * Implémente un routage natif simple.
- * Login temporairement retiré selon demande utilisateur.
+ * Utilise désormais react-router-dom pour une SPA fluide.
  */
 function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
-  useEffect(() => {
-    const handleLocationChange = () => {
-      setCurrentPath(window.location.pathname);
-    };
-
-    window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
-
-  const renderPage = () => {
-    switch(currentPath) {
-      case '/register':
-        return <Register />;
-      case '/login':
-        return <Login />;
-      case '/gallery':
-        return <Gallery />;
-      case '/partitions':
-        return <Partitions />;
-      case '/contact':
-        return <Contact />;
-      default:
-        return <Home />;
-    }
-  };
-
   return (
     <div className="app-root">
       <Toaster position="top-right" reverseOrder={false} />
-      {renderPage()}
+      
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/partitions" element={<Partitions />} />
+        <Route path="/contact" element={<Contact />} />
+        {/* Fallback to Home for unknown routes */}
+        <Route path="*" element={<Home />} />
+      </Routes>
     </div>
   );
 }

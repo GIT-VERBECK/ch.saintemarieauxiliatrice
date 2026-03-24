@@ -146,7 +146,7 @@ const Contact = () => {
                       <MapPin size={24} />
                     </div>
                     <div className="contact-info-details">
-                      <h3>Notre Lieu de Répétition</h3>
+                      <h3>Lieu de Répétition</h3>
                       <p>Paroisse Bienheureuse Anuarite <br/> Goma, Nord-Kivu, RDC</p>
                     </div>
                   </div>
@@ -157,8 +157,8 @@ const Contact = () => {
                     </div>
                     <div className="contact-info-details">
                       <h3>Email</h3>
-                      <p>anuarite.goma@gmail.com</p>
-                      <p>contact@chorale-sma.org</p>
+                      <p>smamedia@sma.com</p>
+                      <p>contact@sma.com</p>
                     </div>
                   </div>
                 </motion.div>
