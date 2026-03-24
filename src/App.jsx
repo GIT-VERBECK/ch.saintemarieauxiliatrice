@@ -17,7 +17,7 @@ function App() {
   return (
     <div className="app-root">
       <Toaster position="top-right" reverseOrder={false} />
-      
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
