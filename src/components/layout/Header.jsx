@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Music, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '../../data/constants';
+import ThemeToggle from '../ui/ThemeToggle';
 import '../../styles/layout.css';
 
 const Header = () => {
@@ -26,7 +27,7 @@ const Header = () => {
               <span className="logo-text" style={{ marginLeft: '-.5rem' }}>SMA</span>
             </Link>
             
-            <nav className="nav-desktop">
+            <nav className="nav-desktop"> 
               {NAV_LINKS.map(({ label, href }) => {
                 const isExternal = href.startsWith('http') || href.startsWith('/#');
                 return isExternal ? (
@@ -45,7 +46,9 @@ const Header = () => {
               })}
             </nav>
             
-            <div className="actions-group">
+            <div className="actions-group"> 
+        
+              <ThemeToggle />
               <Link to="/register" className="btn btn-ghost">Créer un compte</Link>
               <Link to="/login" className="btn btn-primary">Se Connecter</Link>
             </div>
@@ -76,9 +79,12 @@ const Header = () => {
                 <Music size={24} color="var(--brand-primary)" />
                 <span className="logo-text" style={{ color: 'var(--brand-dark)' }}>SMA</span>
               </Link>
-              <button onClick={() => setIsMobileMenuOpen(false)}>
-                <X size={32} />
-              </button>
+              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <ThemeToggle />
+                <button onClick={() => setIsMobileMenuOpen(false)}>
+                  <X size={32} />
+                </button>
+              </div>
             </div>
             
             <nav className="mobile-links">

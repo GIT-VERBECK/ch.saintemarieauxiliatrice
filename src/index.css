@@ -3,16 +3,24 @@
 :root {
   /* Core Palette - Production Grade */
   --brand-primary: #2563EB;
+  --brand-primary-rgb: 37, 99, 235;
   --brand-primary-soft: #EFF6FF;
   --brand-dark: #0F172A;
+  --brand-dark-rgb: 15, 23, 42;
   --brand-accent: #F59E0B;
   
   /* Semantic Colors */
   --text-main: #1E293B;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
   --text-muted: #64748B;
   --bg-body: #FFFFFF;
+  --bg-body-rgb: 255, 255, 255;
+  --bg-primary: #FFFFFF;
   --bg-alt: #F8FAFC;
+  --bg-secondary: #F8FAFC;
   --border-subtle: #E2E8F0;
+  --border-color: #E2E8F0;
   
   /* Layout tokens */
   --container-max: 1240px;
@@ -27,11 +35,27 @@
   --transition-normal: 0.3s var(--ease-smooth);
 }
 
+[data-theme='dark'] {
+  --text-main: #F8FAFC;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #94A3B8;
+  --bg-body: #0F172A;
+  --bg-body-rgb: 15, 23, 42;
+  --bg-primary: #0F172A;
+  --bg-alt: #1E293B;
+  --bg-secondary: #1E293B;
+  --border-subtle: #334155;
+  --border-color: #334155;
+  --brand-primary-soft: rgba(37, 99, 235, 0.1);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 html {

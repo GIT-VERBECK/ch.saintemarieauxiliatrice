@@ -39,7 +39,7 @@
 .partitions-controls {
   padding: 20px 0 40px;
   border-bottom: 1px solid var(--border-subtle);
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(var(--bg-body-rgb), 0.8);
   backdrop-filter: blur(8px);
   position: sticky;
   top: var(--header-height);
@@ -117,7 +117,7 @@
   padding: 8px 20px;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-subtle);
-  background: white;
+  background: var(--bg-body);
   color: var(--text-muted);
   font-weight: 600;
   font-size: 0.875rem;
