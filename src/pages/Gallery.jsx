@@ -1,11 +1,120 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Image as ImageIcon, Filter, X, Maximize2 } from 'lucide-react';
+import { Camera, Image as ImageIcon, Filter, X, Maximize2, Share2, Facebook, Twitter, Link as LinkIcon } from 'lucide-react';
+import toast from 'react-hot-toast';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import SEO from '../components/ui/SEO';
 import { GALLERY_IMAGES } from '../data/constants';
 import '../styles/Gallery.css';
+
+/**
+ * Composant d'image avec chargement paresseux et squelette
+ */
+const LazyImage = ({ src, alt, className }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  return (
+    <div className={`lazy-image-container ${isLoaded ? 'loaded' : ''}`}>
+      {!isLoaded && <div className="skeleton-loader" />}
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        onLoad={() => setIsLoaded(true)}
+        loading="lazy"
+      />
+    </div>
+  );
+};
+
+/**
+ * Icône TikTok personnalisée (non présente dans Lucide par défaut)
+ */
+const TikTokIcon = ({ size = 20 }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
+
+/**
+ * Section de partage social
+ */
+const ShareSection = ({ image, layout = "full" }) => {
+  const shareUrl = window.location.href;
+  const title = `Découvrez cette photo de la Chorale Sainte Marie Auxiliatrice : ${image.title}`;
+
+  const shareLinks = {
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + shareUrl)}`,
+    tiktok: `https://www.tiktok.com/` // TikTok n'a pas de partage URL direct, on redirige ou on informe
+  };
+
+  const copyToClipboard = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(shareUrl);
+    toast.success('Lien copié !', {
+      icon: '🔗',
+      style: { borderRadius: '10px', background: '#333', color: '#fff' },
+    });
+  };
+
+  const handleTikTok = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(shareUrl);
+    toast.success('Lien prêt pour TikTok !', {
+      icon: '🎵',
+      style: { borderRadius: '10px', background: '#000', color: '#fff' },
+    });
+    window.open(shareLinks.tiktok, '_blank');
+  };
+
+  if (layout === "card") {
+    return (
+      <div className="card-share-actions">
+        <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="card-share-btn" onClick={e => e.stopPropagation()} title="Facebook">
+          <Facebook size={16} />
+        </a>
+        <button onClick={handleTikTok} className="card-share-btn tiktok" title="TikTok">
+          <TikTokIcon size={16} />
+        </button>
+        <button onClick={copyToClipboard} className="card-share-btn" title="Copier le lien">
+          <LinkIcon size={16} />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="share-section">
+      <span className="share-label">Partager cette photo</span>
+      <div className="share-buttons">
+        <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="share-btn" title="Facebook">
+          <Facebook size={20} />
+        </a>
+        <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer" className="share-btn" title="Twitter">
+          <Twitter size={20} />
+        </a>
+        <button onClick={handleTikTok} className="share-btn tiktok" title="Partager sur TikTok">
+          <TikTokIcon size={20} />
+        </button>
+        <button onClick={copyToClipboard} className="share-btn copy" title="Copier le lien">
+          <LinkIcon size={20} />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const Gallery = () => {
   const [filter, setFilter] = useState('Tous');
@@ -84,7 +193,7 @@ const Gallery = () => {
                     onClick={() => setSelectedImage(image)}
                   >
                     <div className="image-container">
-                      <img src={image.url} alt={image.title} loading="lazy" />
+                      <LazyImage src={image.url} alt={image.title} />
                       <div className="overlay">
                         <Maximize2 className="expand-icon" />
                         <div className="info">
@@ -92,6 +201,7 @@ const Gallery = () => {
                           <h3>{image.title}</h3>
                         </div>
                       </div>
+                      <ShareSection image={image} layout="card" />
                     </div>
                   </motion.div>
                 ))}
@@ -125,6 +235,7 @@ const Gallery = () => {
               <div className="lightbox-info">
                 <span className="badge">{selectedImage.category}</span>
                 <h2>{selectedImage.title}</h2>
+                <ShareSection image={selectedImage} />
               </div>
             </motion.div>
           </motion.div>
