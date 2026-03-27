@@ -19,7 +19,9 @@
   --bg-primary: #FFFFFF;
   --bg-alt: #F8FAFC;
   --bg-secondary: #F8FAFC;
+  --bg-glass: rgba(255, 255, 255, 0.75);
   --border-subtle: #E2E8F0;
+  --border-glass: rgba(255, 255, 255, 0.3);
   --border-color: #E2E8F0;
   
   /* Layout tokens */
@@ -45,7 +47,9 @@
   --bg-primary: #0F172A;
   --bg-alt: #1E293B;
   --bg-secondary: #1E293B;
+  --bg-glass: rgba(15, 23, 42, 0.75);
   --border-subtle: #334155;
+  --border-glass: rgba(255, 255, 255, 0.1);
   --border-color: #334155;
   --brand-primary-soft: rgba(37, 99, 235, 0.1);
 }
@@ -131,4 +135,42 @@ h1, h2, h3 {
   .container {
     padding: 0 20px;
   }
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--border-glass);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--brand-primary) 0%, #6366F1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+}
+
+.scroll-to-top:hover {
+  background: #1D4ED8;
 }
