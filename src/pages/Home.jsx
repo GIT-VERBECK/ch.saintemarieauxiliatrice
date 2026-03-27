@@ -2,8 +2,10 @@ import React from 'react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import HeroSlider from '../components/home/HeroSlider';
+import StatsSection from '../components/home/StatsSection';
 import EventsSection from '../components/home/EventsSection';
 import NewsSection from '../components/home/NewsSection';
+import PageTransition from '../components/layout/PageTransition';
 
 import SEO from '../components/ui/SEO';
 
@@ -22,6 +24,7 @@ const Home = () => {
       
       <main>
         <HeroSlider />
+        <StatsSection />
         <EventsSection />
         <NewsSection />
       </main>
