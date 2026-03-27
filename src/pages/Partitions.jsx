@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Download, Music, Filter, FileText } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import SEO from '../components/ui/SEO';
 import { PARTITIONS_DATA } from '../data/constants';
 import '../styles/Partitions.css';
 
@@ -28,6 +29,10 @@ const Partitions = () => {
 
   return (
     <div className="layout-root">
+      <SEO 
+        title="Bibliothèque de Partitions" 
+        description="Accédez aux partitions de notre répertoire : œuvres classiques (Mozart, Fauré, Handel), chants liturgiques et compositions sacrées." 
+      />
       <Header />
       
       <main className="partitions-page">

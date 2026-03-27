@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Image as ImageIcon, Filter, X, Maximize2 } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import SEO from '../components/ui/SEO';
 import { GALLERY_IMAGES } from '../data/constants';
 import '../styles/Gallery.css';
 
@@ -21,6 +22,10 @@ const Gallery = () => {
 
   return (
     <div className="layout-root">
+      <SEO 
+        title="Galerie Photos" 
+        description="Découvrez en images les moments forts de la Chorale Sainte Marie Auxiliatrice : concerts, répétitions et vie de notre communauté à Lyon." 
+      />
       <Header />
       
       <main className="gallery-page">
