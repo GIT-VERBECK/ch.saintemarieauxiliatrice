@@ -146,6 +146,8 @@ const Gallery = () => {
               animate={{ opacity: 1, y: 0 }}
               className="hero-content"
             >
+              <span className="badge">Médiathèque</span>
+              <h1>Galerie <span className="text-gradient">Photos</span></h1>
               <p>Retrouvez les moments forts de la chorale, nos concerts et la vie de notre communauté en images.</p>
             </motion.div>
           </div>

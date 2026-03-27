@@ -44,8 +44,8 @@ const Partitions = () => {
               animate={{ opacity: 1, y: 0 }}
               className="hero-content"
             >
-              {/* <span className="badge">Ressources</span>
-              <h1>Bibliothèque de <span className="text-gradient">Partitions</span></h1> */}
+              <span className="badge">Ressources Digitales</span>
+              <h1>Bibliothèque de <span className="text-gradient">Partitions</span></h1>
               <p>Explorez et téléchargez les partitions de notre répertoire. Des œuvres classiques aux chants contemporains.</p>
             </motion.div>
           </div>
