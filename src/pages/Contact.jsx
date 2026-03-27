@@ -4,6 +4,7 @@ import Footer from '../components/layout/Footer';
 import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import SEO from '../components/ui/SEO';
 import '../styles/Contact.css';
 
 /**
@@ -101,6 +102,10 @@ const Contact = () => {
 
   return (
     <div className="layout-root contact-page">
+      <SEO 
+        title="Contact" 
+        description="Contactez la Chorale Sainte Marie Auxiliatrice pour toute demande d'audition, de prestation ou d'information. Nous sommes basés à Goma." 
+      />
       <Header />
       
       <main>

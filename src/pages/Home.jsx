@@ -5,6 +5,8 @@ import HeroSlider from '../components/home/HeroSlider';
 import EventsSection from '../components/home/EventsSection';
 import NewsSection from '../components/home/NewsSection';
 
+import SEO from '../components/ui/SEO';
+
 /**
  * Page d'accueil principale
  * Centralise les sections de la landing page
@@ -12,6 +14,10 @@ import NewsSection from '../components/home/NewsSection';
 const Home = () => {
   return (
     <div className="layout-root">
+      <SEO 
+        title="Accueil" 
+        description="Bienvenue à la Chorale Sainte Marie Auxiliatrice de Lyon. Explorez notre répertoire sacré, écoutez nos chants et rejoignez notre aventure vocale." 
+      />
       <Header />
       
       <main>
