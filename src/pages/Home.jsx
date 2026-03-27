@@ -3,6 +3,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import HeroSlider from '../components/home/HeroSlider';
 import StatsSection from '../components/home/StatsSection';
+import MissionSection from '../components/home/MissionSection';
 import EventsSection from '../components/home/EventsSection';
 import NewsSection from '../components/home/NewsSection';
 import PageTransition from '../components/layout/PageTransition';
@@ -26,6 +27,7 @@ const Home = () => {
         <HeroSlider />
         <StatsSection />
         <EventsSection />
+        <MissionSection />
         <NewsSection />
       </main>
 
