@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import SEO from '../components/ui/SEO';
 import '../styles/auth.css';
 
 /**
@@ -44,6 +45,10 @@ const Login = () => {
 
   return (
     <div className="auth-page">
+      <SEO 
+        title="Connexion" 
+        description="Connectez-vous à votre espace membre Chorale Sainte Marie Auxiliatrice pour accéder à vos partitions et informations personnelles." 
+      />
       <motion.div 
         className="auth-card"
         initial={{ opacity: 0, scale: 0.95, y: 15 }}

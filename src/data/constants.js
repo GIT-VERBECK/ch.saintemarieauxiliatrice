@@ -10,7 +10,7 @@ export const HERO_SLIDES = [
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1590076175571-4b545fdef3a7?auto=format&fit=crop&q=80&w=2000",
+    image: "/src/assets/images/p.jpg",
     tag: "Vie Communautaire",
     title: "Rejoignez notre aventure vocale",
     description: "Nous recherchons constamment de nouvelles voix pour enrichir nos pupitres. Vivez une expérience humaine et spirituelle unique par le chant.",

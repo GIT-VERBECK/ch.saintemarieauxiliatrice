@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Download, Music, Filter, FileText } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import SEO from '../components/ui/SEO';
 import { PARTITIONS_DATA } from '../data/constants';
 import '../styles/Partitions.css';
 
@@ -28,6 +29,10 @@ const Partitions = () => {
 
   return (
     <div className="layout-root">
+      <SEO 
+        title="Bibliothèque de Partitions" 
+        description="Accédez aux partitions de notre répertoire : œuvres classiques (Mozart, Fauré, Handel), chants liturgiques et compositions sacrées." 
+      />
       <Header />
       
       <main className="partitions-page">
@@ -39,8 +44,7 @@ const Partitions = () => {
               animate={{ opacity: 1, y: 0 }}
               className="hero-content"
             >
-              {/* <span className="badge">Ressources</span>
-              <h1>Bibliothèque de <span className="text-gradient">Partitions</span></h1> */}
+              <h1>Bibliothèque de <span className="text-gradient">Partitions</span></h1>
               <p>Explorez et téléchargez les partitions de notre répertoire. Des œuvres classiques aux chants contemporains.</p>
             </motion.div>
           </div>
@@ -82,36 +86,36 @@ const Partitions = () => {
         <section className="partitions-grid-section">
           <div className="container">
             {filteredPartitions.length > 0 ? (
-              <motion.div 
-                layout
-                className="partitions-grid"
-              >
+              <motion.div layout className="partitions-grid">
                 <AnimatePresence mode='popLayout'>
                   {filteredPartitions.map((partition) => (
                     <motion.div
                       key={partition.id}
                       layout
-                      initial={{ opacity: 0, scale: 0.9 }}
+                      initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.3 }}
-                      className="partition-card"
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="partition-card glass-panel"
                     >
-                      <div className="partition-header">
-                        <div className="partition-icon-wrapper">
-                          <Music size={24} />
+                      <div className="card-top">
+                        <div className="partition-icon-circle">
+                          <Music size={20} />
                         </div>
+                        <span className={`category-tag tag-${partition.category.toLowerCase().replace(/\s+/g, '-')}`}>
+                          {partition.category}
+                        </span>
                       </div>
-                      
-                      <div className="partition-info">
-                        <span className="partition-category">{partition.category}</span>
+
+                      <div className="card-body">
                         <h3 className="partition-title">{partition.title}</h3>
                         <p className="partition-composer">{partition.composer}</p>
                       </div>
 
-                      <div className="partition-actions">
-                        <a href={partition.url} className="btn-download" download>
-                          <Download size={18} />
+                      <div className="card-footer">
+                        <div className="format-info">PDF</div>
+                        <a href={partition.url} className="download-icon-btn" title="Télécharger" download>
+                          <Download size={20} />
                           <span>Télécharger</span>
                         </a>
                       </div>
