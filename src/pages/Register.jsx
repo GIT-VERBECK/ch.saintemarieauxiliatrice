@@ -190,7 +190,7 @@ const Register = () => {
         </form>
 
         <div className="auth-footer" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <span>Déjà membre ? <a href="/login">Se connecter</a></span>
+          <span style={{ color: 'var(--text-muted)' }}>Déjà membre ? <a href="/login">Se connecter</a></span>
           <a href="/" className="back-link">Retour au site</a>
           <br />
         </div>

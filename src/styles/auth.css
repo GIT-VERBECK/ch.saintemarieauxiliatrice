@@ -11,10 +11,10 @@
 .auth-card {
   width: 100%;
   max-width: 480px;
-  background: white;
-  border-radius: var(--radius-xl);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-subtle);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+  box-shadow: 0 20px 40px var(--shadow-color, rgba(0,0,0,0.04));
   padding: 40px;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@
 .auth-header h1 {
   font-size: 1.75rem;
   font-weight: 800;
-  color: var(--brand-dark);
+  color: var(--text-main);
   margin-bottom: 8px;
 }
 
@@ -52,7 +52,7 @@
 .input-group label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--brand-dark);
+  color: var(--text-primary);
 }
 
 .input-wrapper {
@@ -74,15 +74,15 @@
   border: 1px solid var(--border-subtle);
   background: var(--bg-alt);
   font-size: 0.9375rem;
-  color: var(--brand-dark);
+  color: var(--text-main);
   transition: var(--transition-fast);
 }
 
 .input-field:focus {
   outline: none;
   border-color: var(--brand-primary);
-  background: white;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 4px var(--brand-primary-soft);
 }
 
 .auth-btn {

@@ -77,7 +77,7 @@ const Header = () => {
             <div className="mobile-menu-header">
               <Link to="/" className="logo-group" onClick={() => setIsMobileMenuOpen(false)}>
                 <Music size={24} color="var(--brand-primary)" />
-                <span className="logo-text" style={{ color: 'var(--brand-dark)' }}>SMA</span>
+                <span className="logo-text" style={{ color: 'var(--text-main)' }}>SMA</span>
               </Link>
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                 <ThemeToggle />
