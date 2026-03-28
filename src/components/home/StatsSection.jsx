@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useInView, animate } from 'framer-motion';
-
-/**
- * Composant pour un item de statistique avec compteur animé
- */
+ 
 const StatItem = ({ value, label, suffix = "+" }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
