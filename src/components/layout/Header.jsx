@@ -9,16 +9,29 @@ import '../../styles/layout.css';
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY <= 20) {
+        setIsScrolled(false);
+      } else if (currentScrollY > lastScrollY) {
+        // Scrolling down
+        setIsScrolled(true);
+      } else {
+        // Scrolling up
+        setIsScrolled(false);
+      }
+      
+      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   const isActive = (path) => {
     if (path.startsWith('/#')) return false; // Anchor links are different

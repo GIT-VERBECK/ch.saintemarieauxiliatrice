@@ -8,8 +8,8 @@
   margin: 0 auto;
   height: 70px;
   background: var(--bg-glass);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -21,8 +21,8 @@
 
 .header-scrolled {
   top: 24px;
-  left: 20px;
-  right: 20px;
+  left: 25px;
+  right: 25px;
   border-radius: 24px;
   border: 1px solid var(--border-glass);
   border-bottom: 1px solid var(--border-glass); 
