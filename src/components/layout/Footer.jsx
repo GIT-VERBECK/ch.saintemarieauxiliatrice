@@ -9,7 +9,7 @@ const Footer = () => (
         <div className="footer-col">
           <Link to="/" className="logo-group" style={{ marginBottom: '24px', display: 'flex', alignItems: 'center' }}>
             <img src="/src/assets/images/icon2.png" alt="Logo" width={66} height={43} style={{ borderRadius: 'var(--radius-md)',marginLeft: '-.9rem' }}/>
-            <span className="logo-text" style={{ color: 'white', marginLeft: '-1.5rem' }}>SMA</span>
+            <span className="logo-text" style={{ color: '#FFFFFF', marginLeft: '-1.5rem' }}>SMA</span>
           </Link>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9375rem', lineHeight: '1.8' }}>
             Une chorale au service de la liturgie et de la prière, dédiée à la beauté du chant sacré.

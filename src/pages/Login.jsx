@@ -118,7 +118,7 @@ const Login = () => {
         </form>
 
         <div className="auth-footer" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <span>Nouveau ici ? <a href="/register">Créer un compte</a></span>
+          <span style={{ color: 'var(--text-muted)' }}>Nouveau ici ? <a href="/register">Créer un compte</a></span>
           <a href="/" className="back-link">Retour au site</a>
           <br />
           <br />

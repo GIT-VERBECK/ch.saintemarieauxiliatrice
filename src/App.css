@@ -30,7 +30,7 @@ section {
 
 .section-head h2 {
   font-size: clamp(2.25rem, 4.5vw, 2.75rem);
-  color: var(--brand-dark);
+  color: var(--text-main);
   margin-bottom: 16px;
   max-width: 600px;
 }
