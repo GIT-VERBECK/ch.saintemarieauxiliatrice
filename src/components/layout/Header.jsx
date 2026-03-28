@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Music, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,7 +8,17 @@ import '../../styles/layout.css';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const isActive = (path) => {
     if (path.startsWith('/#')) return false; // Anchor links are different
@@ -17,7 +27,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="header-main">
+      <header className={`header-main ${isScrolled ? 'header-scrolled' : ''}`}>
         <div className="container">
           <div className="header-content">
             <Link to="/" className="logo-group">
