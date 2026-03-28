@@ -1,0 +1,62 @@
+/* Global System Utilities */
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+}
+
+/* 1. Global Section Standards */
+section {
+  padding: clamp(80px, 12vw, 140px) 0;
+}
+
+.section-tag {
+  color: var(--brand-primary);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.section-head {
+  margin-bottom: 56px;
+}
+
+.section-head h2 {
+  font-size: clamp(2.25rem, 4.5vw, 2.75rem);
+  color: var(--text-main);
+  margin-bottom: 16px;
+  max-width: 600px;
+}
+
+.section-head p {
+  color: var(--text-muted);
+  max-width: 550px;
+  font-size: 1.0625rem;
+}
+
+/* Utility Animations */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-up.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Custom Overlays */
+.overlay-blur {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.2);
+}
