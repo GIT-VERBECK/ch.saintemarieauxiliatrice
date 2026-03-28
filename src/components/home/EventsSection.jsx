@@ -35,21 +35,21 @@ const EventsSection = () => {
         </ScrollReveal>
 
         <div className="grid-events">
-          <EventCard 
+          <EventCard
             image="src/assets/images/lucien.png"
             date="15 AVRIL 2024"
             index={0}
             title="Grand Concert de Pâques"
             description="Une sélection d'œuvres sacrées baroques avec orchestre à cordes."
           />
-          <EventCard 
+          <EventCard
             image="https://www.famillechretienne.fr/sites/default/files/dpistyles/ena_16_9_extra_big/node_7279/84050/public/thumbnails/image/visitation_vierge_marie.jpg?itok=lr7o5QXV1653923298"
             date="24 MAI 2024"
             index={1}
             title="Fête de la Vierge"
             description="Messe solennelle et procession aux flambeaux dans le vieux Lyon."
           />
-          <EventCard 
+          <EventCard
             image="src/assets/images/pacifique.png"
             date="DIMANCHE 10H30"
             index={2}
