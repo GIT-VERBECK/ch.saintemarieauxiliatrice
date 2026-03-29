@@ -45,11 +45,21 @@ The application provides a modern web interface allowing choir members and admin
 - Notifications and reminders
 - Gallery and announcements
 
-## Tech Stack
+## 🛠️ Tech Stack & Ecosystème
 
-- React / Next.js
-- TailwindCSS
-- Axios
+Le projet repose sur une pile technologique moderne pour garantir performance, fluidité et une esthétique premium :
+
+- **Cœur** : [React 19](https://react.dev/) + [Vite 7](https://vitejs.dev/) (Compilation ultra-rapide)
+- **Styling** : Vanilla CSS (Design système sur mesure sans frameworks lourds)
+- **Animations** : [Framer Motion](https://www.framer.com/motion/) (Transitions fluides et interactives)
+- **Icones** : [Lucide React](https://lucide.dev/) (Bibliothèque d'icônes vectorielles légères)
+- **Navigation** : [React Router DOM v7](https://reactrouter.com/) (Routage dynamique SPA)
+- **Feedback** : [React Hot Toast](https://react-hot-toast.com/) (Notifications élégantes)
+- **SEO/Meta** : [React Helmet Async](https://github.com/staylor/react-helmet-async) (Optimisation du référencement par page)
+- **State Management** : React Context API (Gestion native du thème et de l'état global)
+
+---
+
 
 ## Installation
 
