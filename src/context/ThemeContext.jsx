@@ -8,11 +8,6 @@ export const ThemeProvider = ({ children }) => {
     const savedTheme = localStorage.getItem('sma-theme');
     if (savedTheme) return savedTheme;
     
-    // Check user's preferred color scheme
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    
     return 'light';
   });
 
