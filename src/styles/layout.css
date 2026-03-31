@@ -55,16 +55,15 @@
 }
 
 .actions-group {
-  display: none; /* Hidden on mobile to avoid overcrowding */
-  margin: 0 -2rem;
+  display: none;  
+margin: 0 1rem 0 0;
 }
-
-/* Hamburger color fix */
+ 
 .hamburger {
   display: block;
   background: none;
   border: none;
-  color: var(--text-main); /* Adaptive color */
+  color: var(--text-main); 
   cursor: pointer;
   padding: 8px;
 }
