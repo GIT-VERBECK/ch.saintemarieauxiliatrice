@@ -60,6 +60,20 @@ Le projet repose sur une pile technologique moderne pour garantir performance, f
 
 ---
 
+## Folder structure
+
+```
+src/
+├── components/
+│   ├── layout/         # Header, Footer, Layout
+│   ├── ui/             # Boutons, Modales, Composants génériques
+│   └── home/           # Composants spécifiques à la page d'accueil
+├── data/               # Données statiques (NAV_LINKS, HERO_SLIDES, etc.)
+├── pages/              # Pages de l'application (Home, Partitions, etc.)
+├── styles/             # Styles globaux et variables CSS
+├── utils/              # Fonctions utilitaires (formatDate, etc.)
+└── App.jsx             # Composant racine
+```
 
 ## Installation
 
