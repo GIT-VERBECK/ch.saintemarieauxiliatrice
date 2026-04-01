@@ -6,7 +6,7 @@
   right: 0;
   width: auto;
   margin: 0 auto;
-  height: 70px;
+  height: 60px;
   background: var(--bg-glass);
   backdrop-filter: blur(10px) saturate(180%);
   -webkit-backdrop-filter: blur(15px) saturate(180%);
@@ -27,7 +27,7 @@
   border: 1px solid var(--border-glass);
   border-bottom: 1px solid var(--border-glass); 
   box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 8px 15px -6px rgba(0, 0, 0, 0.08);
-  height: 64px;
+  height: 54px;
 }
 
 .header-content {
@@ -183,7 +183,7 @@
 
 @media (min-width: 1190px) {
   .header-main {
-    height: 80px;
+    height: 70px;
   }
 
   .nav-desktop {
@@ -200,7 +200,7 @@
     left: 50px;
     right: 50px;
     top: 30px;
-    height: 74px;
+    height: 64px;
     border-radius: 32px;
     margin: 0 auto;
     box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
