@@ -4,7 +4,7 @@ export const HERO_SLIDES = [
     image: "https://images.unsplash.com/photo-1548705085-101177834f47?auto=format&fit=crop&q=80&w=2000",
     tag: "L'excellence Liturgique",
     title: "Chorale Sainte Marie Auxiliatrice",
-    description: "Découvrez la beauté du chant sacré. Nous œuvrons pour le rayonnement de la foi et de l'art choral à Lyon à travers nos célébrations et concerts.",
+    description: "Découvrez la beauté du chant sacré. Nous œuvrons pour le rayonnement de la foi et de l'art.",
     cta1: "Prochaines Messes",
     cta2: "Écouter nos Chants"
   },
@@ -13,7 +13,7 @@ export const HERO_SLIDES = [
     image: "/src/assets/images/p.jpg",
     tag: "Vie Communautaire",
     title: "Rejoignez notre aventure vocale",
-    description: "Nous recherchons constamment de nouvelles voix pour enrichir nos pupitres. Vivez une expérience humaine et spirituelle unique par le chant.",
+    description: "Nous recherchons constamment de nouvelles voix pour enrichir nos pupitres. Vivez une expérience humaine et spirituelle par le chant.",
     cta1: "Passer une Audition",
     cta2: "Notre Histoire"
   },

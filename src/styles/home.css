@@ -8,7 +8,7 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  margin-top: 70px; /* Offset for solid header */
+  margin-top: 60px; /* Offset for solid header */
 }
 
 .hero-slide {
@@ -234,7 +234,7 @@
 
 @media (min-width: 1024px) {
   .hero-v4 {
-    margin-top: 80px;
+    margin-top: 70px;
     height: 65vh; /* More compact on desktop too */
   }
   
