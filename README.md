@@ -68,10 +68,10 @@ src/
 │   ├── layout/         # Header, Footer, Layout
 │   ├── ui/             # Boutons, Modales, Composants génériques
 │   └── home/           # Composants spécifiques à la page d'accueil
-├── data/               # Données statiques (NAV_LINKS, HERO_SLIDES, etc.)
-├── pages/              # Pages de l'application (Home, Partitions, etc.)
+├── data/               # Données statiques
+├── pages/              # Pages de l'application
 ├── styles/             # Styles globaux et variables CSS
-├── utils/              # Fonctions utilitaires (formatDate, etc.)
+├── utils/              # Fonctions utilitaires
 └── App.jsx             # Composant racine
 ```
 
