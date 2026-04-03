@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, Lock, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -10,6 +11,7 @@ import '../styles/auth.css';
  * Comprend : Nom complet, Email, Téléphone et Mot de passe
  */
 const Register = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -91,6 +93,11 @@ const Register = () => {
           fontWeight: '600',
         },
       });
+
+      // Redirection vers la page de connexion
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
 
       // Vider le formulaire après succès
       setFormData({ fullName: '', email: '', phone: '', password: '', voiceType: 'Soprano' });
