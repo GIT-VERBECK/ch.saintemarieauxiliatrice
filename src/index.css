@@ -90,6 +90,7 @@ body {
   line-height: 1.6;
   font-display: swap;
   overflow-x: hidden;
+  zoom: 75%;
 }
 
 .container {
