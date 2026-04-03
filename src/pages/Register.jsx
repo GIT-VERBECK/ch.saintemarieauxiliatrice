@@ -16,7 +16,8 @@ const Register = () => {
     fullName: '',
     email: '',
     phone: '',
-    password: ''
+    password: '',
+    voiceType: 'Soprano'
   });
 
   const handleChange = (e) => {
@@ -24,7 +25,7 @@ const Register = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // --- Validation du mot de passe ---
@@ -59,11 +60,29 @@ const Register = () => {
 
     setIsLoading(true);
     
-    // Simuler une requête réseau de 1.5 seconde pour le côté "Pro"
-    setTimeout(() => {
-      console.log('Données du compte:', formData);
-      toast.success(`Bienvenue ${formData.fullName.split(' ')[0]} ! Ton compte a été créé avec succès.`, {
-        duration: 4000,
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          full_name: formData.fullName,
+          voice_type: formData.voiceType,
+          phone: formData.phone
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Une erreur est survenue lors de l'inscription.");
+      }
+
+      toast.success(`Bienvenue ${formData.fullName.split(' ')[0]} ! ${data.message}`, {
+        duration: 6000,
         style: {
           background: 'var(--brand-dark)',
           color: '#fff',
@@ -71,16 +90,22 @@ const Register = () => {
           fontSize: '14px',
           fontWeight: '600',
         },
-        iconTheme: {
-          primary: '#22c55e',
-          secondary: '#fff',
-        },
       });
+
+      // Vider le formulaire après succès
+      setFormData({ fullName: '', email: '', phone: '', password: '', voiceType: 'Soprano' });
+
+    } catch (error) {
+      toast.error(error.message, {
+        style: {
+          background: '#ef4444',
+          color: '#fff',
+          borderRadius: '12px',
+        }
+      });
+    } finally {
       setIsLoading(false);
-      
-      // Optionnel: vider le formulaire après succès
-      setFormData({ fullName: '', email: '', phone: '', password: '' });
-    }, 1500);
+    }
   };
 
   return (
@@ -117,6 +142,28 @@ const Register = () => {
                 value={formData.fullName}
                 onChange={handleChange}
               />
+            </div>
+          </div>
+
+          {/* Pupitre */}
+          <div className="input-group">
+            <label htmlFor="voiceType">Pupitre (Voix)</label>
+            <div className="input-wrapper">
+              <User size={18} />
+              <select 
+                id="voiceType" 
+                name="voiceType"
+                required
+                className="input-field"
+                value={formData.voiceType}
+                onChange={handleChange}
+                style={{ appearance: 'none', background: 'transparent' }}
+              >
+                <option value="Soprano">Soprano</option>
+                <option value="Alto">Alto</option>
+                <option value="Ténor">Ténor</option>
+                <option value="Basse">Basse</option>
+              </select>
             </div>
           </div>
 
