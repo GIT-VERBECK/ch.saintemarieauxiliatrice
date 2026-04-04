@@ -6,7 +6,14 @@ import { useAuth } from '../context/AuthContext';
 import Sidebar from '../components/dashboard/Sidebar';
 import DashboardScores from '../components/dashboard/DashboardScores';
 import DashboardAnnouncements from '../components/dashboard/DashboardAnnouncements';
+import DashboardCalendar from '../components/dashboard/DashboardCalendar';
+import ProfileView from '../components/dashboard/ProfileView';
+import AdminMembers from './admin/AdminMembers';
+import AdminPartitions from './admin/AdminPartitions';
+import AdminEvents from './admin/AdminEvents';
+import AdminAnnouncements from './admin/AdminAnnouncements';
 import SEO from '../components/ui/SEO';
+import { getDashboardOverview } from '../services/dashboard.service';
 import '../styles/Dashboard.css';
 
 // Layout global pour les sous-vues du dashboard
@@ -30,8 +37,45 @@ const SubViewLayout = ({ title, children, subtitle }) => (
   </motion.div>
 );
 
-const Overview = () => {
+const Overview = ({ data, loading }) => {
     const { user } = useAuth();
+    const navigate = useNavigate();
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0 });
+    
+    // Formatter la date de la prochaine répétition
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "À définir";
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        return new Intl.DateTimeFormat('fr-FR', options).format(new Date(dateStr));
+    };
+
+    useEffect(() => {
+        if (!data?.nextEvent?.event_date) return;
+        
+        const timer = setInterval(() => {
+            const target = new Date(data.nextEvent.event_date);
+            const diff = target - new Date();
+            
+            if (diff > 0) {
+                setTimeLeft({
+                    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+                    mins: Math.floor((diff / 1000 / 60) % 60),
+                });
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [data?.nextEvent]);
+
+    if (loading) {
+        return (
+            <SubViewLayout title="Chargement..." subtitle="Nous préparons vos ressources.">
+                <div className="loading-container"><div className="spinner"></div></div>
+            </SubViewLayout>
+        );
+    }
+
     return (
         <SubViewLayout 
             title={`Heureux de vous revoir, ${user?.full_name?.split(' ')[0] || 'Choriste'} ! 👋`}
@@ -39,7 +83,7 @@ const Overview = () => {
         >
             <div className="dashboard-grid">
                 {/* Prochaine Répétition Widget */}
-                <div className="dashboard-card widget-event glass-panel">
+                <div className="dashboard-card widget-event glass-panel" onClick={() => navigate('/dashboard/calendar')} style={{ cursor: 'pointer' }}>
                     <div className="card-header">
                         <div className="header-with-icon">
                             <Calendar size={18} />
@@ -47,12 +91,12 @@ const Overview = () => {
                         </div>
                     </div>
                     <div className="card-body">
-                        <h2>Mardi 08 Avril</h2>
-                        <p>18h30 • Paroisse Sainte Marie Auxiliatrice</p>
+                        <h2>{data?.nextEvent?.title || "Mardi 15 Avril"}</h2>
+                        <p>{data?.nextEvent ? `${formatDate(data.nextEvent.event_date)} • ${data.nextEvent.location}` : "18h30 • Paroisse Sainte Marie Auxiliatrice"}</p>
                         <div className="countdown">
-                            <div className="time-item"><span>02</span><small>Jours</small></div>
-                            <div className="time-item"><span>14</span><small>Heures</small></div>
-                            <div className="time-item"><span>45</span><small>Min</small></div>
+                            <div className="time-item"><span>{String(timeLeft.days).padStart(2, '0')}</span><small>Jours</small></div>
+                            <div className="time-item"><span>{String(timeLeft.hours).padStart(2, '0')}</span><small>Heures</small></div>
+                            <div className="time-item"><span>{String(timeLeft.mins).padStart(2, '0')}</span><small>Min</small></div>
                         </div>
                     </div>
                 </div>
@@ -64,41 +108,46 @@ const Overview = () => {
                             <Music size={20} className="text-secondary" />
                             <h3>Partitions récentes</h3>
                         </div>
-                        <button className="btn-link">Tout voir</button>
+                        <button className="btn-link" onClick={() => navigate('/dashboard/scores')}>Tout voir</button>
                     </div>
                     <div className="mini-list">
-                        <div className="list-item">
-                            <div className="item-icon-wrapper">
-                                <Music size={16} />
-                            </div>
-                            <div className="item-info">
-                                <strong>Laudemus Virginem</strong>
-                                <small>Josquin des Prés • Liturgie</small>
-                            </div>
-                        </div>
-                        <div className="list-item">
-                            <div className="item-icon-wrapper">
-                                <Music size={16} />
-                            </div>
-                            <div className="item-info">
-                                <strong>Missa Brevis</strong>
-                                <small>W.A. Mozart • Classique</small>
-                            </div>
-                        </div>
+                        {data?.recentPartitions?.length > 0 ? (
+                            data.recentPartitions.map(p => (
+                                <div key={p.id} className="list-item" onClick={() => navigate('/dashboard/scores')} style={{ cursor: 'pointer' }}>
+                                    <div className="item-icon-wrapper"><Music size={16} /></div>
+                                    <div className="item-info">
+                                        <strong>{p.title}</strong>
+                                        <small>{p.composer} • {p.category}</small>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <>
+                                <div className="list-item" onClick={() => navigate('/dashboard/scores')} style={{ cursor: 'pointer' }}>
+                                    <div className="item-icon-wrapper"><Music size={16} /></div>
+                                    <div className="item-info">
+                                        <strong>Laudemus Virginem</strong>
+                                        <small>Josquin des Prés • Liturgie</small>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
 
                 {/* Annonce Widget */}
-                <div className="dashboard-card widget-news glass-panel">
+                <div className="dashboard-card widget-news glass-panel" onClick={() => navigate('/dashboard/announcements')} style={{ cursor: 'pointer' }}>
                     <div className="card-header-flex">
                         <div className="title-with-icon">
                             <Bell size={18} className="text-secondary" />
                             <h3>Flash Infos</h3>
                         </div>
-                        <span className="news-date">Hier</span>
+                        <span className="news-date">{data?.announcements?.[0] ? 'Nouveau' : 'Hier'}</span>
                     </div>
                     <div className="news-content-mini">
-                        <p className="news-excerpt">"N'oubliez pas d'apporter vos chemises blanches pour l'enregistrement de samedi matin..."</p>
+                        <p className="news-excerpt">
+                            {data?.announcements?.[0]?.content || "\"N'oubliez pas d'apporter vos chemises blanches pour l'enregistrement de samedi matin...\""}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -108,12 +157,33 @@ const Overview = () => {
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
+
+  const canAccessAdmin = user?.role === 'Admin' || user?.role === 'Choir_Master';
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+        setIsLoading(true);
+        const data = await getDashboardOverview();
+        setDashboardData(data);
+        // Mettre à jour le user en local au cas où des infos ont changé côté serveur
+        if (data.profile) {
+            updateUser(data.profile, true);
+        }
+    } catch (error) {
+        console.error("Failed to load dashboard data", error);
+    } finally {
+        setIsLoading(false);
+    }
+  };
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -137,7 +207,7 @@ const Dashboard = () => {
           </div>
 
           <div className="nav-right">
-            <button className="nav-action-btn" title="Notifications">
+            <button className="nav-action-btn" title="Notifications" onClick={() => navigate('/dashboard/announcements')}>
               <Bell size={20} />
               <span className="notification-dot" />
             </button>
@@ -157,42 +227,25 @@ const Dashboard = () => {
         <section className="dashboard-viewport">
           <AnimatePresence mode="wait">
             <Routes>
-              <Route path="/" element={<Overview />} />
+              <Route path="/" element={<Overview data={dashboardData} loading={isLoading} />} />
               <Route path="/scores" element={<SubViewLayout title="Ma Bibliothèque" subtitle="Accédez à toutes vos partitions et ressources audio."><DashboardScores /></SubViewLayout>} />
-              <Route path="/calendar" element={<SubViewLayout title="Agenda" subtitle="Ne manquez aucune répétition ou célébration.">Agenda interactif en cours d'intégration...</SubViewLayout>} />
+              <Route path="/calendar" element={<SubViewLayout title="Agenda" subtitle="Ne manquez aucune répétition ou célébration."><DashboardCalendar /></SubViewLayout>} />
               <Route path="/announcements" element={<SubViewLayout title="Tableau d'affichage" subtitle="Les dernières communications de la direction chorale."><DashboardAnnouncements /></SubViewLayout>} />
               <Route path="/profile" element={
                 <SubViewLayout title="Mon Profil" subtitle="Gérez vos informations personnelles et préférences.">
-                  <div className="profile-section glass-panel">
-                    <div className="profile-header">
-                        <div className="profile-avatar-large">
-                            {user?.full_name?.charAt(0) || 'U'}
-                        </div>
-                        <div className="profile-info">
-                            <h2>{user?.full_name}</h2>
-                            <p>{user?.email}</p>
-                            <span className="pupitre-badge">{user?.voice_type}</span>
-                        </div>
-                    </div>
-                    <div className="profile-details-grid">
-                      <div className="detail-item">
-                        <label>Téléphone</label>
-                        <p>{user?.phone || '+243 ...'}</p>
-                      </div>
-                      <div className="detail-item">
-                        <label>Date d'inscription</label>
-                        <p>Avril 2024</p>
-                      </div>
-                    </div>
-                    <div className="profile-actions-footer">
-                        <button className="btn btn-ghost danger" onClick={logout}>
-                            <LogOut size={18} /> Me déconnecter
-                        </button>
-                        <button className="btn btn-primary btn-sm">Modifier mes infos</button>
-                    </div>
-                  </div>
+                  <ProfileView />
                 </SubViewLayout>
               } />
+              
+              {/* ADMIN ROUTES */}
+              {canAccessAdmin && (
+                <>
+                    <Route path="/admin/members" element={<SubViewLayout title="Gestion des Membres" subtitle="Gérez les accès et les rôles de la chorale."><AdminMembers /></SubViewLayout>} />
+                    <Route path="/admin/scores" element={<SubViewLayout title="Gestion de la Bibliothèque" subtitle="Ajoutez ou supprimez des partitions pour les choristes."><AdminPartitions /></SubViewLayout>} />
+                    <Route path="/admin/events" element={<SubViewLayout title="Gestion de l'Agenda" subtitle="Planifiez les prochaines répétitions et concerts."><AdminEvents /></SubViewLayout>} />
+                    <Route path="/admin/announcements" element={<SubViewLayout title="Flash Infos" subtitle="Publiez des communications instantanées pour toute la chorale."><AdminAnnouncements /></SubViewLayout>} />
+                </>
+              )}
             </Routes>
           </AnimatePresence>
         </section>

@@ -1,40 +1,63 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Info, AlertTriangle } from 'lucide-react';
+import { getAnnouncements } from '../../services/dashboard.service';
 
 const DashboardAnnouncements = () => {
-  const announcements = [
-    { id: 1, type: 'info', date: 'Hier, 14:30', title: 'Répétition générale', content: 'N\'oubliez pas vos chemises blanches pour l\'enregistrement de samedi matin à 9h00.' },
-    { id: 2, type: 'alert', date: '01 Avril 2024', title: 'Changement de salle', content: 'Exceptionnellement, la répétition de ce mardi aura lieu à la salle municipale et non à la paroisse.' },
-    { id: 3, type: 'event', date: '28 Mars 2024', title: 'Concert de Pâques', content: 'Le programme définitif a été validé. Merci de consulter la section Partitions.' }
-  ];
+    const [announcements, setAnnouncements] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  const getIcon = (type) => {
-    switch(type) {
-      case 'alert': return <AlertTriangle size={20} color="#F59E0B" />;
-      case 'event': return <Calendar size={20} color="#2563EB" />;
-      default: return <Info size={20} color="#64748B" />;
+    useEffect(() => {
+        const fetchAnnouncements = async () => {
+            try {
+                setLoading(true);
+                const data = await getAnnouncements();
+                setAnnouncements(data);
+            } catch (error) {
+                console.error("Failed to fetch announcements", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAnnouncements();
+    }, []);
+
+    const getIcon = (type) => {
+        switch(type) {
+            case 'alert': return <AlertTriangle size={20} color="#F59E0B" />;
+            case 'event': return <Calendar size={20} color="#2563EB" />;
+            default: return <Info size={20} color="#64748B" />;
+        }
+    };
+
+    if (loading) {
+        return <div className="loading-simple">Chargement des annonces...</div>;
     }
-  };
 
-  return (
-    <div className="announcements-timeline">
-      {announcements.map(ann => (
-        <div key={ann.id} className="announcement-card glass-panel">
-          <div className="ann-icon">
-            {getIcon(ann.type)}
-          </div>
-          <div className="ann-content">
-            <div className="ann-meta">
-              <span className="ann-date">{ann.date}</span>
-              <span className={`ann-type type-${ann.type}`}>{ann.type.toUpperCase()}</span>
-            </div>
-            <h4>{ann.title}</h4>
-            <p>{ann.content}</p>
-          </div>
+    const displayAnnouncements = announcements.length > 0 ? announcements : [
+        { id: 1, type: 'info', created_at: new Date().toISOString(), title: 'Répétition générale', content: 'N\'oubliez pas vos chemises blanches pour l\'enregistrement de samedi matin à 9h00.' },
+    ];
+
+    return (
+        <div className="announcements-timeline">
+            {displayAnnouncements.map(ann => (
+                <div key={ann.id} className="announcement-card glass-panel">
+                    <div className="ann-icon">
+                        {getIcon(ann.type || 'info')}
+                    </div>
+                    <div className="ann-content">
+                        <div className="ann-meta">
+                            <span className="ann-date">
+                                {new Date(ann.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                            <span className={`ann-type type-${ann.type || 'info'}`}>{(ann.type || 'info').toUpperCase()}</span>
+                        </div>
+                        <h4>{ann.title}</h4>
+                        <p>{ann.content}</p>
+                    </div>
+                </div>
+            ))}
         </div>
-      ))}
-    </div>
-  );
+    );
 };
 
 export default DashboardAnnouncements;
