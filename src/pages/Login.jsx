@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import SEO from '../components/ui/SEO';
 import '../styles/auth.css';
 
@@ -12,6 +14,11 @@ import '../styles/auth.css';
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -22,14 +29,26 @@ const Login = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulation de connexion
-    setTimeout(() => {
-      console.log('Connexion...', formData);
-      toast.success(`Heureux de vous revoir ! Connexion réussie.`, {
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Identifiants invalides');
+      }
+
+      login(data.user, data.token);
+      
+      toast.success(`Heureux de vous revoir, ${data.user.full_name.split(' ')[0]} !`, {
         duration: 4000,
         style: {
           background: 'var(--brand-dark)',
@@ -39,8 +58,15 @@ const Login = () => {
           fontWeight: '600',
         }
       });
+
+      navigate(from, { replace: true });
+    } catch (error) {
+      toast.error(error.message, {
+        style: { background: '#ef4444', color: '#fff', borderRadius: '12px' }
+      });
+    } finally {
       setIsLoading(false);
-    }, 1200);
+    }
   };
 
   return (
