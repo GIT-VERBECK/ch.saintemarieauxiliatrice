@@ -29,8 +29,15 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('sma_token');
   };
 
-  const updateUser = async (newUserData) => {
+  const updateUser = async (newUserData, skipAPI = false) => {
     try {
+        if (skipAPI) {
+            const updatedUser = { ...user, ...newUserData };
+            setUser(updatedUser);
+            localStorage.setItem('sma_user', JSON.stringify(updatedUser));
+            return updatedUser;
+        }
+
         const token = localStorage.getItem('sma_token');
         const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
         

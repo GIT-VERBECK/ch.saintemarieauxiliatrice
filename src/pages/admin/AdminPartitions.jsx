@@ -5,6 +5,7 @@ import { addPartition, deletePartition } from '../../services/admin.service';
 
 const AdminPartitions = () => {
     const [partitions, setPartitions] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [newPartition, setNewPartition] = useState({
@@ -30,6 +31,11 @@ const AdminPartitions = () => {
             setLoading(false);
         }
     };
+
+    const filteredPartitions = partitions.filter(p => 
+        p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.composer?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const handleAddPartition = async (e) => {
         e.preventDefault();
@@ -58,6 +64,15 @@ const AdminPartitions = () => {
     return (
         <div className="admin-scores-view">
             <div className="admin-actions-bar">
+                <div className="search-box glass-panel">
+                    <Search size={18} />
+                    <input 
+                        type="text" 
+                        placeholder="Rechercher une pièce par son titre..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
                 <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
                     <Plus size={18} /> Nouvelle Partition
                 </button>
@@ -108,7 +123,7 @@ const AdminPartitions = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {partitions.map(p => (
+                        {filteredPartitions.map(p => (
                             <tr key={p.id}>
                                 <td><strong>{p.title}</strong></td>
                                 <td>{p.composer || 'Anonyme'}</td>

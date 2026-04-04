@@ -4,6 +4,7 @@ import { getAllMembers, updateMemberRole } from '../../services/admin.service';
 
 const AdminMembers = () => {
     const [members, setMembers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -22,6 +23,11 @@ const AdminMembers = () => {
         }
     };
 
+    const filteredMembers = members.filter(m => 
+        m.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        m.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     const handleRoleChange = async (memberId, newRole) => {
         if (!window.confirm(`Changer le rôle en ${newRole} ?`)) return;
         try {
@@ -36,6 +42,17 @@ const AdminMembers = () => {
 
     return (
         <div className="admin-members-view">
+            <div className="admin-actions-bar">
+                <div className="search-box glass-panel">
+                    <Search size={18} />
+                    <input 
+                        type="text" 
+                        placeholder="Rechercher un membre par nom ou email..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
             <div className="members-table-container glass-panel">
                 <table className="members-table">
                     <thead>
@@ -48,7 +65,7 @@ const AdminMembers = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {members.map(member => (
+                        {filteredMembers.map(member => (
                             <tr key={member.id}>
                                 <td>
                                     <div className="member-cell">

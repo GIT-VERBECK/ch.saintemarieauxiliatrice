@@ -39,6 +39,7 @@ const SubViewLayout = ({ title, children, subtitle }) => (
 
 const Overview = ({ data, loading }) => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0 });
     
     // Formatter la date de la prochaine répétition
@@ -82,7 +83,7 @@ const Overview = ({ data, loading }) => {
         >
             <div className="dashboard-grid">
                 {/* Prochaine Répétition Widget */}
-                <div className="dashboard-card widget-event glass-panel">
+                <div className="dashboard-card widget-event glass-panel" onClick={() => navigate('/dashboard/calendar')} style={{ cursor: 'pointer' }}>
                     <div className="card-header">
                         <div className="header-with-icon">
                             <Calendar size={18} />
@@ -107,12 +108,12 @@ const Overview = ({ data, loading }) => {
                             <Music size={20} className="text-secondary" />
                             <h3>Partitions récentes</h3>
                         </div>
-                        <button className="btn-link">Tout voir</button>
+                        <button className="btn-link" onClick={() => navigate('/dashboard/scores')}>Tout voir</button>
                     </div>
                     <div className="mini-list">
                         {data?.recentPartitions?.length > 0 ? (
                             data.recentPartitions.map(p => (
-                                <div key={p.id} className="list-item">
+                                <div key={p.id} className="list-item" onClick={() => navigate('/dashboard/scores')} style={{ cursor: 'pointer' }}>
                                     <div className="item-icon-wrapper"><Music size={16} /></div>
                                     <div className="item-info">
                                         <strong>{p.title}</strong>
@@ -122,18 +123,11 @@ const Overview = ({ data, loading }) => {
                             ))
                         ) : (
                             <>
-                                <div className="list-item">
+                                <div className="list-item" onClick={() => navigate('/dashboard/scores')} style={{ cursor: 'pointer' }}>
                                     <div className="item-icon-wrapper"><Music size={16} /></div>
                                     <div className="item-info">
                                         <strong>Laudemus Virginem</strong>
                                         <small>Josquin des Prés • Liturgie</small>
-                                    </div>
-                                </div>
-                                <div className="list-item">
-                                    <div className="item-icon-wrapper"><Music size={16} /></div>
-                                    <div className="item-info">
-                                        <strong>Missa Brevis</strong>
-                                        <small>W.A. Mozart • Classique</small>
                                     </div>
                                 </div>
                             </>
@@ -142,7 +136,7 @@ const Overview = ({ data, loading }) => {
                 </div>
 
                 {/* Annonce Widget */}
-                <div className="dashboard-card widget-news glass-panel">
+                <div className="dashboard-card widget-news glass-panel" onClick={() => navigate('/dashboard/announcements')} style={{ cursor: 'pointer' }}>
                     <div className="card-header-flex">
                         <div className="title-with-icon">
                             <Bell size={18} className="text-secondary" />
@@ -168,6 +162,8 @@ const Dashboard = () => {
   const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
 
+  const canAccessAdmin = user?.role === 'Admin' || user?.role === 'Choir_Master';
+
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchDashboardData();
@@ -180,7 +176,7 @@ const Dashboard = () => {
         setDashboardData(data);
         // Mettre à jour le user en local au cas où des infos ont changé côté serveur
         if (data.profile) {
-            updateUser(data.profile);
+            updateUser(data.profile, true);
         }
     } catch (error) {
         console.error("Failed to load dashboard data", error);
@@ -211,7 +207,7 @@ const Dashboard = () => {
           </div>
 
           <div className="nav-right">
-            <button className="nav-action-btn" title="Notifications">
+            <button className="nav-action-btn" title="Notifications" onClick={() => navigate('/dashboard/announcements')}>
               <Bell size={20} />
               <span className="notification-dot" />
             </button>

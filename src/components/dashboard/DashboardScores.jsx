@@ -46,8 +46,20 @@ const DashboardScores = () => {
                         <span className="score-date">Ajouté le {new Date(score.created_at).toLocaleDateString('fr-FR')}</span>
                     </div>
                     <div className="score-actions">
-                        <button className="icon-btn" title="Ouvrir"><ExternalLink size={18} /></button>
-                        <button className="icon-btn primary" title="Télécharger"><Download size={18} /></button>
+                        <button 
+                            className="icon-btn" 
+                            title="Ouvrir" 
+                            onClick={() => score.attachment_url ? window.open(score.attachment_url, '_blank') : alert('Lien non disponible')}
+                        >
+                            <ExternalLink size={18} />
+                        </button>
+                        <button 
+                            className="icon-btn primary" 
+                            title="Télécharger"
+                            onClick={() => score.attachment_url ? window.open(score.attachment_url, '_blank') : alert('Lien de téléchargement non disponible')}
+                        >
+                            <Download size={18} />
+                        </button>
                     </div>
                 </div>
             ))}
