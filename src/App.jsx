@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import Gallery from './pages/Gallery';
 import Partitions from './pages/Partitions';
 import Contact from './pages/Contact';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import PageTransition from './components/layout/PageTransition';
 import ScrollToTop from './components/ui/ScrollToTop';
 import { Toaster } from 'react-hot-toast';
@@ -32,6 +34,13 @@ function App() {
           <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
           <Route path="/partitions" element={<PageTransition><Partitions /></PageTransition>} />
           <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+          
+          <Route path="/dashboard/*" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+
           {/* Fallback to Home for unknown routes */}
           <Route path="*" element={<PageTransition><Home /></PageTransition>} />
         </Routes>
