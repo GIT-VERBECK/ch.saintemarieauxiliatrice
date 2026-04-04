@@ -22,6 +22,15 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
     { id: 'profile', icon: <User size={20} />, label: 'Mon Profil', path: '/dashboard/profile' },
   ];
 
+  const adminItems = [
+    { id: 'admin_members', icon: <User size={20} />, label: 'Membres', path: '/dashboard/admin/members' },
+    { id: 'admin_scores', icon: <Music size={20} />, label: 'Gérer les Partitions', path: '/dashboard/admin/scores' },
+    { id: 'admin_events', icon: <Calendar size={20} />, label: 'Gérer l\'Agenda', path: '/dashboard/admin/events' },
+    { id: 'admin_announcements', icon: <Bell size={20} />, label: 'Flash Infos', path: '/dashboard/admin/announcements' },
+  ];
+
+  const canAccessAdmin = user?.role === 'Admin' || user?.role === 'Choir_Master';
+
   return (
     <>
       {/* Overlay pour mobile */}
@@ -56,6 +65,23 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
               <span className="nav-label">{item.label}</span>
             </NavLink>
           ))}
+
+          {canAccessAdmin && (
+            <div className="admin-nav-section">
+                <div className="nav-divider"><span>ADMINISTRATION</span></div>
+                {adminItems.map((item) => (
+                    <NavLink 
+                      key={item.id}
+                      to={item.path}
+                      className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <span className="nav-icon">{item.icon}</span>
+                      <span className="nav-label">{item.label}</span>
+                    </NavLink>
+                ))}
+            </div>
+          )}
         </nav>
 
         <div className="sidebar-footer">

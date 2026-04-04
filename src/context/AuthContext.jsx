@@ -29,10 +29,31 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('sma_token');
   };
 
-  const updateUser = (newUserData) => {
-    const updatedUser = { ...user, ...newUserData };
-    setUser(updatedUser);
-    localStorage.setItem('sma_user', JSON.stringify(updatedUser));
+  const updateUser = async (newUserData) => {
+    try {
+        const token = localStorage.getItem('sma_token');
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        
+        const response = await fetch(`${API_URL}/auth/profile`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newUserData)
+        });
+
+        if (!response.ok) throw new Error('Erreur de mise à jour');
+
+        const { user: updatedUser } = await response.json();
+        
+        setUser(updatedUser);
+        localStorage.setItem('sma_user', JSON.stringify(updatedUser));
+        return updatedUser;
+    } catch (error) {
+        console.error("Profile Update Error:", error);
+        throw error;
+    }
   };
 
   return (
