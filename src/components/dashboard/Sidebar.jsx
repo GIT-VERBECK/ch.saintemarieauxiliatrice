@@ -5,6 +5,7 @@ import {
   Music, 
   Bell, 
   User, 
+  CircleUser,
   LogOut, 
   Calendar,
   X
@@ -87,7 +88,7 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
         <div className="sidebar-footer">
           <div className="user-mini-card">
             <div className="user-avatar">
-              {user?.full_name?.charAt(0) || 'U'}
+               <CircleUser size={24} />
             </div>
             <div className="user-info">
               <span className="user-name">{user?.full_name || 'Utilisateur'}</span>

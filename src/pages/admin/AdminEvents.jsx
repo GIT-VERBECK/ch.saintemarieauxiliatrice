@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Plus, Trash2, MapPin, Clock } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Plus, Trash2 } from 'lucide-react';
 import { getEvents } from '../../services/dashboard.service';
 import { addEvent, deleteEvent } from '../../services/admin.service';
 
@@ -38,8 +39,8 @@ const AdminEvents = () => {
             setShowForm(false);
             setNewEvent({ title: '', event_date: '', location: '', time: '', description: '' });
             fetchEvents();
-        } catch (error) {
-            alert("Erreur lors de la programmation");
+        } catch {
+            toast.error("Erreur lors de la programmation");
         }
     };
 
@@ -48,8 +49,8 @@ const AdminEvents = () => {
         try {
             await deleteEvent(id);
             fetchEvents();
-        } catch (error) {
-            alert("Erreur lors de l'annulation");
+        } catch {
+            toast.error("Erreur lors de l'annulation");
         }
     };
 

@@ -40,6 +40,9 @@
   max-width: 900px;
   margin: 0 auto;
   padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  ;
 }
 
 .hero-v4 h1 {
