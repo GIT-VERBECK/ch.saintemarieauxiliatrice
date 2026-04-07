@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Music, Download, ExternalLink } from 'lucide-react';
 import { getPartitions } from '../../services/dashboard.service';
 
@@ -49,14 +50,14 @@ const DashboardScores = () => {
                         <button 
                             className="icon-btn" 
                             title="Ouvrir" 
-                            onClick={() => score.attachment_url ? window.open(score.attachment_url, '_blank') : alert('Lien non disponible')}
+                            onClick={() => score.attachment_url ? window.open(score.attachment_url, '_blank') : toast.error('Lien non disponible')}
                         >
                             <ExternalLink size={18} />
                         </button>
                         <button 
                             className="icon-btn primary" 
                             title="Télécharger"
-                            onClick={() => score.attachment_url ? window.open(score.attachment_url, '_blank') : alert('Lien de téléchargement non disponible')}
+                            onClick={() => score.attachment_url ? window.open(score.attachment_url, '_blank') : toast.error('Lien de téléchargement non disponible')}
                         >
                             <Download size={18} />
                         </button>

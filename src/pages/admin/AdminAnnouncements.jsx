@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Plus, Trash2, AlertTriangle, Info } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Plus, Trash2 } from 'lucide-react';
 import { getAnnouncements } from '../../services/dashboard.service';
 import { addAnnouncement, deleteAnnouncement } from '../../services/admin.service';
 
@@ -36,8 +37,8 @@ const AdminAnnouncements = () => {
             setShowForm(false);
             setNewAnn({ title: '', content: '', type: 'info' });
             fetchAnnouncements();
-        } catch (error) {
-            alert("Erreur lors de la publication");
+        } catch {
+            toast.error("Erreur lors de la publication");
         }
     };
 
@@ -46,8 +47,8 @@ const AdminAnnouncements = () => {
         try {
             await deleteAnnouncement(id);
             fetchAnnouncements();
-        } catch (error) {
-            alert("Erreur lors de la suppression");
+        } catch {
+            toast.error("Erreur lors de la suppression");
         }
     };
 

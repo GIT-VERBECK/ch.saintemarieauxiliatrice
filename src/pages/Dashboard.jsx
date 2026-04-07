@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, Search, Bell, LogOut, Calendar, Music } from 'lucide-react';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
+import { Menu, Search, Bell, Calendar, Music, CircleUser, MapPin, Users } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import Sidebar from '../components/dashboard/Sidebar';
 import DashboardScores from '../components/dashboard/DashboardScores';
@@ -18,7 +19,7 @@ import '../styles/Dashboard.css';
 
 // Layout global pour les sous-vues du dashboard
 const SubViewLayout = ({ title, children, subtitle }) => (
-  <motion.div 
+  <Motion.div 
     initial={{ opacity: 0, y: 15 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -15 }}
@@ -34,7 +35,7 @@ const SubViewLayout = ({ title, children, subtitle }) => (
     <div className="subview-content">
       {children}
     </div>
-  </motion.div>
+  </Motion.div>
 );
 
 const Overview = ({ data, loading }) => {
@@ -45,8 +46,14 @@ const Overview = ({ data, loading }) => {
     // Formatter la date de la prochaine répétition
     const formatDate = (dateStr) => {
         if (!dateStr) return "À définir";
-        const options = { weekday: 'long', day: 'numeric', month: 'long' };
-        return new Intl.DateTimeFormat('fr-FR', options).format(new Date(dateStr));
+        try {
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return "Date invalide";
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            return new Intl.DateTimeFormat('fr-FR', options).format(date);
+        } catch {
+            return "À définir";
+        }
     };
 
     useEffect(() => {
@@ -81,73 +88,97 @@ const Overview = ({ data, loading }) => {
             title={`Heureux de vous revoir, ${user?.full_name?.split(' ')[0] || 'Choriste'} ! 👋`}
             subtitle="Explorez vos ressources et l'actualité de la chorale."
         >
-            <div className="dashboard-grid">
-                {/* Prochaine Répétition Widget */}
-                <div className="dashboard-card widget-event glass-panel" onClick={() => navigate('/dashboard/calendar')} style={{ cursor: 'pointer' }}>
-                    <div className="card-header">
-                        <div className="header-with-icon">
-                            <Calendar size={18} />
-                            <span className="badge-live">Prochaine Répétition</span>
+            <div className="dashboard-grid-elite">
+                {/* HERO: Prochaine Répétition */}
+                <div className="hero-banner-card glass-panel" onClick={() => navigate('/dashboard/calendar')}>
+                    <div className="hero-banner-content">
+                        <div className="hero-tag-badge">ÉVÉNEMENT À VENIR</div>
+                        <h2>{data?.nextEvent?.title || "Répétition Générale"}</h2>
+                        <div className="hero-meta">
+                           <div className="meta-info">
+                              <Calendar size={18} />
+                              <span>{formatDate(data?.nextEvent?.event_date)}</span>
+                           </div>
+                           <div className="meta-info">
+                              <MapPin size={18} />
+                              <span>{data?.nextEvent?.location || "Sainte Marie Auxiliatrice"}</span>
+                           </div>
                         </div>
                     </div>
-                    <div className="card-body">
-                        <h2>{data?.nextEvent?.title || "Mardi 15 Avril"}</h2>
-                        <p>{data?.nextEvent ? `${formatDate(data.nextEvent.event_date)} • ${data.nextEvent.location}` : "18h30 • Paroisse Sainte Marie Auxiliatrice"}</p>
-                        <div className="countdown">
-                            <div className="time-item"><span>{String(timeLeft.days).padStart(2, '0')}</span><small>Jours</small></div>
-                            <div className="time-item"><span>{String(timeLeft.hours).padStart(2, '0')}</span><small>Heures</small></div>
-                            <div className="time-item"><span>{String(timeLeft.mins).padStart(2, '0')}</span><small>Min</small></div>
+                    <div className="hero-countdown-box">
+                        <div className="countdown-ring">
+                           <div className="countdown-value">
+                              <strong>{String(timeLeft.days).padStart(2, '0')}</strong>
+                              <small>JOURS</small>
+                           </div>
+                        </div>
+                        <div className="countdown-time-mini">
+                           <span>{String(timeLeft.hours).padStart(2, '0')}h</span>
+                           <span>{String(timeLeft.mins).padStart(2, '0')}m</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Dernières Partitions Widget */}
-                <div className="dashboard-card widget-partitions glass-panel">
-                    <div className="card-header-flex">
-                        <div className="title-with-icon">
-                            <Music size={20} className="text-secondary" />
-                            <h3>Partitions récentes</h3>
+                {/* STATS ROW */}
+                <div className="stats-row">
+                    <div className="stat-card glass-panel">
+                        <div className="stat-icon-circ blue"><Music size={18} /></div>
+                        <div className="stat-val-stack">
+                           <span className="stat-v">{data?.stats?.totalPartitions || 42}</span>
+                           <span className="stat-l">Partitions</span>
                         </div>
-                        <button className="btn-link" onClick={() => navigate('/dashboard/scores')}>Tout voir</button>
                     </div>
-                    <div className="mini-list">
-                        {data?.recentPartitions?.length > 0 ? (
-                            data.recentPartitions.map(p => (
-                                <div key={p.id} className="list-item" onClick={() => navigate('/dashboard/scores')} style={{ cursor: 'pointer' }}>
-                                    <div className="item-icon-wrapper"><Music size={16} /></div>
-                                    <div className="item-info">
+                    <div className="stat-card glass-panel">
+                        <div className="stat-icon-circ indigo"><Users size={18} /></div>
+                        <div className="stat-val-stack">
+                           <span className="stat-v">{data?.stats?.totalMembers || 85}</span>
+                           <span className="stat-l">Choristes</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* TWO COLUMN CONTENT */}
+                <div className="main-content-split">
+                    {/* Partitions */}
+                    <div className="split-widget glass-panel">
+                        <div className="widget-header">
+                            <h3>Bibliothèque de partitions</h3>
+                            <button className="btn-link" onClick={() => navigate('/dashboard/scores')}>Voir tout</button>
+                        </div>
+                        <div className="mini-score-list">
+                            {(data?.recentPartitions || []).map(p => (
+                                <div key={p.id} className="score-row-item" onClick={() => navigate('/dashboard/scores')}>
+                                    <div className="score-icon-mini"><Music size={14} /></div>
+                                    <div className="score-txt">
                                         <strong>{p.title}</strong>
                                         <small>{p.composer} • {p.category}</small>
                                     </div>
                                 </div>
-                            ))
-                        ) : (
-                            <>
-                                <div className="list-item" onClick={() => navigate('/dashboard/scores')} style={{ cursor: 'pointer' }}>
-                                    <div className="item-icon-wrapper"><Music size={16} /></div>
-                                    <div className="item-info">
-                                        <strong>Laudemus Virginem</strong>
-                                        <small>Josquin des Prés • Liturgie</small>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-
-                {/* Annonce Widget */}
-                <div className="dashboard-card widget-news glass-panel" onClick={() => navigate('/dashboard/announcements')} style={{ cursor: 'pointer' }}>
-                    <div className="card-header-flex">
-                        <div className="title-with-icon">
-                            <Bell size={18} className="text-secondary" />
-                            <h3>Flash Infos</h3>
+                            ))}
+                            {(!data?.recentPartitions || data?.recentPartitions.length === 0) && (
+                                <div className="empty-state-mini">Aucune partition récente.</div>
+                            )}
                         </div>
-                        <span className="news-date">{data?.announcements?.[0] ? 'Nouveau' : 'Hier'}</span>
                     </div>
-                    <div className="news-content-mini">
-                        <p className="news-excerpt">
-                            {data?.announcements?.[0]?.content || "\"N'oubliez pas d'apporter vos chemises blanches pour l'enregistrement de samedi matin...\""}
-                        </p>
+
+                    {/* Dernières Nouvelles */}
+                    <div className="split-widget glass-panel">
+                        <div className="widget-header">
+                            <h3>Flash Infos</h3>
+                            <button className="btn-link" onClick={() => navigate('/dashboard/announcements')}>Historique</button>
+                        </div>
+                        <div className="announcement-mini-container">
+                            {(data?.announcements || []).map(ann => (
+                                <div key={ann.id} className={`ann-mini-item type-${ann.type || 'info'}`} onClick={() => navigate('/dashboard/announcements')}>
+                                    <div className="ann-title">{ann.title}</div>
+                                    <div className="ann-excerpt">{(ann.content || '').substring(0, 70)}...</div>
+                                    <div className="ann-date">{new Date(ann.created_at).toLocaleDateString()}</div>
+                                </div>
+                            ))}
+                            {(!data?.announcements || data?.announcements.length === 0) && (
+                                <div className="empty-state-mini">Aucune annonce récente.</div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,33 +190,96 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { user, logout, updateUser } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const canAccessAdmin = user?.role === 'Admin' || user?.role === 'Choir_Master';
 
   useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+          setIsLoading(true);
+          const data = await getDashboardOverview();
+          setDashboardData(data);
+      } catch (error) {
+          console.error("Failed to load dashboard data", error);
+      } finally {
+          setIsLoading(false);
+      }
+    };
+
     window.scrollTo(0, 0);
     fetchDashboardData();
   }, []);
 
-  const fetchDashboardData = async () => {
-    try {
-        setIsLoading(true);
-        const data = await getDashboardOverview();
-        setDashboardData(data);
-        // Mettre à jour le user en local au cas où des infos ont changé côté serveur
-        if (data.profile) {
-            updateUser(data.profile, true);
-        }
-    } catch (error) {
-        console.error("Failed to load dashboard data", error);
-    } finally {
-        setIsLoading(false);
-    }
-  };
-
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const searchableEntries = useMemo(() => {
+    if (!dashboardData) return [];
+
+    const entries = [
+      { label: 'tableau de bord', route: '/dashboard', keywords: ['accueil', 'overview', 'dashboard'] },
+      { label: 'agenda chorale', route: '/dashboard/calendar', keywords: ['agenda', 'calendrier', 'event', 'repetition'] },
+      { label: 'annonces', route: '/dashboard/announcements', keywords: ['annonce', 'news', 'actualite', 'notification'] },
+      { label: 'profil', route: '/dashboard/profile', keywords: ['profil', 'compte', 'utilisateur'] },
+      { label: 'partitions', route: '/dashboard/scores', keywords: ['partition', 'score', 'musique', 'bibliotheque'] },
+    ];
+
+    (dashboardData.recentPartitions || []).forEach((partition) => {
+      entries.push({
+        label: partition.title,
+        route: '/dashboard/scores',
+        keywords: [partition.title, partition.composer, partition.category].filter(Boolean),
+      });
+    });
+
+    (dashboardData.announcements || []).forEach((announcement) => {
+      entries.push({
+        label: announcement.title,
+        route: '/dashboard/announcements',
+        keywords: [announcement.title, announcement.content, announcement.type].filter(Boolean),
+      });
+    });
+
+    if (dashboardData.nextEvent) {
+      entries.push({
+        label: dashboardData.nextEvent.title || 'Prochain événement',
+        route: '/dashboard/calendar',
+        keywords: [
+          dashboardData.nextEvent.title,
+          dashboardData.nextEvent.location,
+          dashboardData.nextEvent.description,
+        ].filter(Boolean),
+      });
+    }
+
+    return entries;
+  }, [dashboardData]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) {
+      toast('Entrez un mot-clé pour lancer la recherche.');
+      return;
+    }
+
+    const match = searchableEntries.find((entry) => {
+      const inLabel = entry.label?.toLowerCase().includes(query);
+      const inKeywords = (entry.keywords || []).some((k) => String(k).toLowerCase().includes(query));
+      return inLabel || inKeywords;
+    });
+
+    if (!match) {
+      toast.error(`Aucun résultat pour "${searchQuery}".`);
+      return;
+    }
+
+    navigate(match.route);
+    toast.success(`Ouverture : ${match.label}`);
+  };
 
   return (
     <div className="dashboard-root">
@@ -200,10 +294,18 @@ const Dashboard = () => {
             <button className="menu-toggle-btn" onClick={toggleSidebar}>
               <Menu size={24} />
             </button>
-            <div className="search-bar-mini">
+            <form className="search-bar-mini" onSubmit={handleSearchSubmit}>
               <Search size={18} />
-              <input type="text" placeholder="Rechercher une partition, un événement..." />
-            </div>
+              <input
+                type="text"
+                placeholder="Rechercher une partition, un événement..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button type="submit" className="search-submit-btn" aria-label="Lancer la recherche">
+                Aller
+              </button>
+            </form>
           </div>
 
           <div className="nav-right">
@@ -213,7 +315,7 @@ const Dashboard = () => {
             </button>
             <div className="nav-user-profile" onClick={() => navigate('/dashboard/profile')}>
               <div className="user-avatar-mini">
-                 {user?.full_name?.charAt(0) || 'U'}
+                 <CircleUser size={20} />
               </div>
               <div className="user-details-mini">
                 <span className="user-name-mini">{user?.full_name?.split(' ')[0]}</span>

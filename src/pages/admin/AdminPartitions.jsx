@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Music, Plus, Trash2, ExternalLink } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Plus, Trash2, Search } from 'lucide-react';
 import { getPartitions } from '../../services/dashboard.service';
 import { addPartition, deletePartition } from '../../services/admin.service';
 
@@ -44,8 +45,8 @@ const AdminPartitions = () => {
             setShowForm(false);
             setNewPartition({ title: '', composer: '', category: 'Liturgie', voice_type: 'Tous', attachment_url: '' });
             fetchPartitions();
-        } catch (error) {
-            alert("Erreur lors de l'ajout");
+        } catch {
+            toast.error("Erreur lors de l'ajout");
         }
     };
 
@@ -54,8 +55,8 @@ const AdminPartitions = () => {
         try {
             await deletePartition(id);
             fetchPartitions();
-        } catch (error) {
-            alert("Erreur lors de la suppression");
+        } catch {
+            toast.error("Erreur lors de la suppression");
         }
     };
 

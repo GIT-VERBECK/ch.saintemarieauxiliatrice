@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { User, Shield, UserCog, Mail, Phone, Music } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { User, Shield, Mail, Phone, Search } from 'lucide-react';
 import { getAllMembers, updateMemberRole } from '../../services/admin.service';
 
 const AdminMembers = () => {
@@ -32,16 +33,36 @@ const AdminMembers = () => {
         if (!window.confirm(`Changer le rôle en ${newRole} ?`)) return;
         try {
             await updateMemberRole(memberId, newRole);
-            fetchMembers(); // Recharger la liste
-        } catch (error) {
-            alert("Erreur lors du changement de rôle");
+            fetchMembers();
+        } catch {
+            toast.error("Erreur lors du changement de rôle");
         }
     };
 
     if (loading) return <div className="loading-simple">Chargement des membres...</div>;
 
+    const roleStats = members.reduce((acc, curr) => {
+        acc[curr.role] = (acc[curr.role] || 0) + 1;
+        return acc;
+    }, {});
+
     return (
         <div className="admin-members-view">
+            <div className="admin-stats-row">
+                <div className="admin-stat-card glass-panel">
+                    <span className="stat-label">Total Membres</span>
+                    <span className="stat-value">{members.length}</span>
+                </div>
+                <div className="admin-stat-card glass-panel">
+                    <span className="stat-label">Chef de Chœurs</span>
+                    <span className="stat-value">{roleStats['Choir_Master'] || 0}</span>
+                </div>
+                <div className="admin-stat-card glass-panel">
+                    <span className="stat-label">Administrateurs</span>
+                    <span className="stat-value">{roleStats['Admin'] || 0}</span>
+                </div>
+            </div>
+
             <div className="admin-actions-bar">
                 <div className="search-box glass-panel">
                     <Search size={18} />
