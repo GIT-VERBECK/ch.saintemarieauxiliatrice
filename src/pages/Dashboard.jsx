@@ -42,6 +42,7 @@ const Overview = ({ data, loading, error, onRetry }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0 });
+    const [activeMetric, setActiveMetric] = useState('partitions');
     
     // Formatter la date de la prochaine répétition
     const formatDate = (dateStr) => {
@@ -101,6 +102,18 @@ const Overview = ({ data, loading, error, onRetry }) => {
       if (!item.voice_type || item.voice_type === 'Tous') return true;
       return item.voice_type === user?.voice_type;
     });
+    const announcementCounts = (data?.announcements || []).reduce((acc, item) => {
+      const key = item.type || 'info';
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+    const chartMetrics = [
+      { id: 'partitions', label: 'Partitions', value: data?.stats?.totalPartitions || 0, color: '#3b82f6' },
+      { id: 'choristes', label: 'Choristes', value: data?.stats?.totalMembers || 0, color: '#6366f1' },
+      { id: 'annonces', label: 'Annonces', value: (data?.announcements || []).length, color: '#8b5cf6' },
+      { id: 'alertes', label: 'Alertes', value: announcementCounts.alert || 0, color: '#f59e0b' },
+    ];
+    const maxMetric = Math.max(...chartMetrics.map((m) => m.value), 1);
 
     return (
         <SubViewLayout 
@@ -152,6 +165,33 @@ const Overview = ({ data, loading, error, onRetry }) => {
                         <div className="stat-val-stack">
                            <span className="stat-v">{data?.stats?.totalMembers || 85}</span>
                            <span className="stat-l">Choristes</span>
+                        </div>
+                    </div>
+                    <div className="stat-chart-card glass-panel">
+                        <div className="widget-header">
+                            <h3>Vue d'ensemble interactive</h3>
+                            <span className="chart-active-label">{chartMetrics.find((m) => m.id === activeMetric)?.label}</span>
+                        </div>
+                        <div className="mini-chart-bars">
+                            {chartMetrics.map((metric) => (
+                                <button
+                                    key={metric.id}
+                                    type="button"
+                                    className={`chart-bar-item ${activeMetric === metric.id ? 'active' : ''}`}
+                                    onMouseEnter={() => setActiveMetric(metric.id)}
+                                    onFocus={() => setActiveMetric(metric.id)}
+                                >
+                                    <span className="chart-bar-value">{metric.value}</span>
+                                    <span
+                                        className="chart-bar-fill"
+                                        style={{
+                                            height: `${Math.max((metric.value / maxMetric) * 100, 8)}%`,
+                                            background: metric.color,
+                                        }}
+                                    />
+                                    <span className="chart-bar-label">{metric.label}</span>
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -249,13 +289,14 @@ const Dashboard = () => {
   const [readAnnouncementIds, setReadAnnouncementIds] = useState([]);
   const [favoriteScoreIds, setFavoriteScoreIds] = useState([]);
   const [lastOpenedScore, setLastOpenedScore] = useState(null);
+  const [preferencesReady, setPreferencesReady] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const canAccessAdmin = user?.role === 'Admin' || user?.role === 'Choir_Master';
   const unreadCount = useMemo(() => {
-    const ids = new Set(readAnnouncementIds);
-    return (dashboardData?.announcements || []).filter((ann) => !ids.has(ann.id)).length;
+    const ids = new Set(readAnnouncementIds.map((v) => String(v)));
+    return (dashboardData?.announcements || []).filter((ann) => !ids.has(String(ann.id))).length;
   }, [dashboardData?.announcements, readAnnouncementIds]);
 
   const fetchDashboardData = useCallback(async () => {
@@ -284,6 +325,7 @@ const Dashboard = () => {
         setReadAnnouncementIds(prefs.readAnnouncementIds || []);
         setFavoriteScoreIds(prefs.favoriteScoreIds || []);
         setLastOpenedScore(prefs.lastOpenedScore || null);
+        setPreferencesReady(true);
       } catch {
         // Fallback localStorage for compatibility
         try {
@@ -293,10 +335,12 @@ const Dashboard = () => {
           setReadAnnouncementIds(readRaw ? JSON.parse(readRaw) : []);
           setFavoriteScoreIds(favRaw ? JSON.parse(favRaw) : []);
           setLastOpenedScore(lastRaw ? JSON.parse(lastRaw) : null);
+          setPreferencesReady(true);
         } catch {
           setReadAnnouncementIds([]);
           setFavoriteScoreIds([]);
           setLastOpenedScore(null);
+          setPreferencesReady(true);
         }
       }
     };
@@ -304,6 +348,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    if (!preferencesReady) return;
     const t = setTimeout(() => {
       updateDashboardPreferences({ readAnnouncementIds, favoriteScoreIds, lastOpenedScore }).catch(() => {
         localStorage.setItem('sma_read_announcements', JSON.stringify(readAnnouncementIds));
@@ -312,7 +357,7 @@ const Dashboard = () => {
       });
     }, 400);
     return () => clearTimeout(t);
-  }, [readAnnouncementIds, favoriteScoreIds, lastOpenedScore]);
+  }, [preferencesReady, readAnnouncementIds, favoriteScoreIds, lastOpenedScore]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -413,14 +458,17 @@ const Dashboard = () => {
   };
 
   const markAllAnnouncementsAsRead = useCallback(() => {
-    const allIds = (dashboardData?.announcements || []).map((ann) => ann.id);
+    const allIds = (dashboardData?.announcements || []).map((ann) => String(ann.id));
     setReadAnnouncementIds(allIds);
     toast.success('Toutes les notifications sont marquées comme lues.');
   }, [dashboardData?.announcements]);
 
   const toggleAnnouncementRead = useCallback((id) => {
+    const sid = String(id);
     setReadAnnouncementIds((prev) => (
-      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
+      prev.map((v) => String(v)).includes(sid)
+        ? prev.map((v) => String(v)).filter((v) => v !== sid)
+        : [...prev.map((v) => String(v)), sid]
     ));
   }, []);
 
@@ -566,7 +614,11 @@ const Dashboard = () => {
               />
               <Route path="/profile" element={
                 <SubViewLayout title="Mon Profil" subtitle="Gérez vos informations personnelles et préférences.">
-                  <ProfileView />
+                  <ProfileView
+                    favoriteScoreIds={favoriteScoreIds}
+                    unreadCount={unreadCount}
+                    lastOpenedScore={lastOpenedScore}
+                  />
                 </SubViewLayout>
               } />
               

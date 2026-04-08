@@ -56,9 +56,10 @@ const DashboardAnnouncements = ({ readIds = [], onToggleRead, onMarkAllRead }) =
         );
     }
 
+    const readSet = new Set(readIds.map((v) => String(v)));
     const filteredAnnouncements = announcements.filter((ann) => {
         const byType = typeFilter === 'all' || (ann.type || 'info') === typeFilter;
-        const isRead = readIds.includes(ann.id);
+        const isRead = readSet.has(String(ann.id));
         const byRead = readFilter === 'all' || (readFilter === 'read' ? isRead : !isRead);
         return byType && byRead;
     });
@@ -85,7 +86,7 @@ const DashboardAnnouncements = ({ readIds = [], onToggleRead, onMarkAllRead }) =
             </div>
 
             {filteredAnnouncements.map(ann => {
-                const isRead = readIds.includes(ann.id);
+                const isRead = readSet.has(String(ann.id));
                 return (
                 <div key={ann.id} className="announcement-card glass-panel">
                     <div className="ann-icon">

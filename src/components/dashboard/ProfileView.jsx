@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { LogOut, User as UserIcon, Phone, Music, CircleUser, Mail, Calendar, Camera } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { LogOut, User as UserIcon, Phone, Music, CircleUser, Mail, Calendar, Camera, Bell, Star, Clock3 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
-const ProfileView = () => {
+const ProfileView = ({ favoriteScoreIds = [], unreadCount = 0, lastOpenedScore = null }) => {
     const { user, logout, updateUser } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
@@ -13,6 +13,11 @@ const ProfileView = () => {
         phone: user?.phone || ''
     });
     const [loading, setLoading] = useState(false);
+    const isDirty = useMemo(() => (
+        formData.full_name !== (user?.full_name || '')
+        || formData.voice_type !== (user?.voice_type || '')
+        || formData.phone !== (user?.phone || '')
+    ), [formData, user]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,6 +43,15 @@ const ProfileView = () => {
 
     const handlePasswordChange = () => {
         toast("La modification du mot de passe se fait actuellement via le support administrateur.");
+    };
+
+    const handleCancelEdit = () => {
+        setFormData({
+            full_name: user?.full_name || '',
+            voice_type: user?.voice_type || '',
+            phone: user?.phone || ''
+        });
+        setIsEditing(false);
     };
 
     return (
@@ -133,19 +147,19 @@ const ProfileView = () => {
 
                         <AnimatePresence>
                             {isEditing && (
-                                <motion.div 
+                                <Motion.div 
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
                                     className="form-submit-row"
                                 >
-                                    <button type="button" className="btn btn-ghost" onClick={() => setIsEditing(false)}>
+                                    <button type="button" className="btn btn-ghost" onClick={handleCancelEdit}>
                                         Annuler
                                     </button>
-                                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                                    <button type="submit" className="btn btn-primary" disabled={loading || !isDirty}>
                                         {loading ? "Enregistrement..." : "Sauvegarder les changements"}
                                     </button>
-                                </motion.div>
+                                </Motion.div>
                             )}
                         </AnimatePresence>
                     </form>
@@ -162,6 +176,33 @@ const ProfileView = () => {
                             </div>
                         </div>
                     </div>
+                    <div className="stat-mini-card glass-panel">
+                        <div className="stat-content">
+                            <Bell size={20} className="stat-icon" />
+                            <div className="stat-data">
+                                <span className="stat-label">Notifications non lues</span>
+                                <span className="stat-value">{unreadCount}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="stat-mini-card glass-panel">
+                        <div className="stat-content">
+                            <Star size={20} className="stat-icon" />
+                            <div className="stat-data">
+                                <span className="stat-label">Partitions favorites</span>
+                                <span className="stat-value">{favoriteScoreIds.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="stat-mini-card glass-panel">
+                        <div className="stat-content">
+                            <Clock3 size={20} className="stat-icon" />
+                            <div className="stat-data">
+                                <span className="stat-label">Dernière partition ouverte</span>
+                                <span className="stat-value">{lastOpenedScore?.title || 'Aucune'}</span>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="account-safety-card glass-panel">
                         <h3>Sécurité</h3>
@@ -170,7 +211,7 @@ const ProfileView = () => {
                             Changer mon mot de passe
                         </button>
                         <div className="danger-zone">
-                            <button className="btn btn-ghost danger btn-block mt-4" onClick={logout}>
+                            <button className="btn btn-danger btn-block mt-4" onClick={logout}>
                                 <LogOut size={16} /> Se déconnecter
                             </button>
                         </div>

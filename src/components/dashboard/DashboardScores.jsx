@@ -79,7 +79,9 @@ const DashboardScores = ({ favorites = [], onFavoritesChange, lastOpenedScore, o
     });
 
     const toggleFavorite = (id) => {
-        const next = favorites.includes(id) ? favorites.filter((v) => v !== id) : [...favorites, id];
+        const sid = String(id);
+        const normalized = favorites.map((v) => String(v));
+        const next = normalized.includes(sid) ? normalized.filter((v) => v !== sid) : [...normalized, sid];
         onFavoritesChange?.(next);
     };
 
@@ -124,7 +126,7 @@ const DashboardScores = ({ favorites = [], onFavoritesChange, lastOpenedScore, o
                         <span className="score-cat">{score.category || score.composer}</span>
                         <span className="score-date">Ajouté le {new Date(score.created_at).toLocaleDateString('fr-FR')}</span>
                         <button type="button" className="btn btn-link btn-sm" onClick={() => toggleFavorite(score.id)}>
-                            {favorites.includes(score.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                            {favorites.map((v) => String(v)).includes(String(score.id)) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
                         </button>
                         {lastOpenedScore?.id === score.id && (
                             <span className="score-resume-tag">Reprendre (ouvert récemment)</span>
