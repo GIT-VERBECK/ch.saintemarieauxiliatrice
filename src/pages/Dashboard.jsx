@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { Menu, Search, Bell, Calendar, Music, CircleUser, MapPin, Users } from 'lucide-react';
@@ -38,7 +38,7 @@ const SubViewLayout = ({ title, children, subtitle }) => (
   </Motion.div>
 );
 
-const Overview = ({ data, loading }) => {
+const Overview = ({ data, loading, error, onRetry }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0 });
@@ -79,6 +79,19 @@ const Overview = ({ data, loading }) => {
         return (
             <SubViewLayout title="Chargement..." subtitle="Nous préparons vos ressources.">
                 <div className="loading-container"><div className="spinner"></div></div>
+            </SubViewLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <SubViewLayout title="Impossible de charger le tableau de bord" subtitle="Vérifiez votre connexion puis réessayez.">
+                <div className="status-card glass-panel">
+                    <p className="status-text">{error}</p>
+                    <button type="button" className="btn btn-primary" onClick={onRetry}>
+                        Réessayer
+                    </button>
+                </div>
             </SubViewLayout>
         );
     }
@@ -190,28 +203,31 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const canAccessAdmin = user?.role === 'Admin' || user?.role === 'Choir_Master';
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-          setIsLoading(true);
-          const data = await getDashboardOverview();
-          setDashboardData(data);
-      } catch (error) {
-          console.error("Failed to load dashboard data", error);
-      } finally {
-          setIsLoading(false);
-      }
-    };
+  const fetchDashboardData = useCallback(async () => {
+    try {
+        setIsLoading(true);
+        setLoadError('');
+        const data = await getDashboardOverview();
+        setDashboardData(data);
+    } catch (error) {
+        console.error("Failed to load dashboard data", error);
+        setLoadError("Le serveur dashboard est temporairement indisponible.");
+    } finally {
+        setIsLoading(false);
+    }
+  }, []);
 
+  useEffect(() => {
     window.scrollTo(0, 0);
     fetchDashboardData();
-  }, []);
+  }, [fetchDashboardData]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -329,7 +345,7 @@ const Dashboard = () => {
         <section className="dashboard-viewport">
           <AnimatePresence mode="wait">
             <Routes>
-              <Route path="/" element={<Overview data={dashboardData} loading={isLoading} />} />
+              <Route path="/" element={<Overview data={dashboardData} loading={isLoading} error={loadError} onRetry={fetchDashboardData} />} />
               <Route path="/scores" element={<SubViewLayout title="Ma Bibliothèque" subtitle="Accédez à toutes vos partitions et ressources audio."><DashboardScores /></SubViewLayout>} />
               <Route path="/calendar" element={<SubViewLayout title="Agenda" subtitle="Ne manquez aucune répétition ou célébration."><DashboardCalendar /></SubViewLayout>} />
               <Route path="/announcements" element={<SubViewLayout title="Tableau d'affichage" subtitle="Les dernières communications de la direction chorale."><DashboardAnnouncements /></SubViewLayout>} />

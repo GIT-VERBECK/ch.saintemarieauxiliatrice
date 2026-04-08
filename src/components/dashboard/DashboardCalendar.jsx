@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, MapPin, Clock } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 import { getEvents } from '../../services/dashboard.service';
 
 const DashboardCalendar = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    const fetchEvents = async () => {
+        try {
+            setLoading(true);
+            setError('');
+            const data = await getEvents();
+            setEvents(data || []);
+        } catch (error) {
+            console.error("Failed to fetch events", error);
+            setError("Impossible de charger l'agenda.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                setLoading(true);
-                const data = await getEvents();
-                setEvents(data);
-            } catch (error) {
-                console.error("Failed to fetch events", error);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchEvents();
     }, []);
 
@@ -25,19 +29,26 @@ const DashboardCalendar = () => {
         return <div className="loading-simple">Chargement de l'agenda...</div>;
     }
 
-    const displayEvents = events.length > 0 ? events : [
-        { id: 1, title: 'Répétition hebdomadaire', event_date: '2024-04-10', location: 'Paroisse Sainte Marie Auxiliatrice', time: '18:30' },
-        { id: 2, title: 'Messe du Dimanche', event_date: '2024-04-14', location: 'Grande Cathédrale', time: '09:00' },
-    ];
+    if (error) {
+        return (
+            <div className="status-card glass-panel">
+                <p className="status-text">{error}</p>
+                <button type="button" className="btn btn-primary" onClick={fetchEvents}>Réessayer</button>
+            </div>
+        );
+    }
 
-    const formatDate = (dateStr) => {
-        const options = { weekday: 'long', day: 'numeric', month: 'long' };
-        return new Intl.DateTimeFormat('fr-FR', options).format(new Date(dateStr));
-    };
+    if (events.length === 0) {
+        return (
+            <div className="status-card glass-panel">
+                <p className="status-text">Aucun événement planifié pour le moment.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="calendar-timeline">
-            {displayEvents.map(event => (
+            {events.map(event => (
                 <div key={event.id} className="event-card glass-panel">
                     <div className="event-date-badge">
                         <span className="day">{new Date(event.event_date).getDate()}</span>

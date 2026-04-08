@@ -5,19 +5,23 @@ import { getAnnouncements } from '../../services/dashboard.service';
 const DashboardAnnouncements = () => {
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    const fetchAnnouncements = async () => {
+        try {
+            setLoading(true);
+            setError('');
+            const data = await getAnnouncements();
+            setAnnouncements(data || []);
+        } catch (error) {
+            console.error("Failed to fetch announcements", error);
+            setError("Impossible de charger les annonces.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchAnnouncements = async () => {
-            try {
-                setLoading(true);
-                const data = await getAnnouncements();
-                setAnnouncements(data);
-            } catch (error) {
-                console.error("Failed to fetch announcements", error);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchAnnouncements();
     }, []);
 
@@ -33,13 +37,26 @@ const DashboardAnnouncements = () => {
         return <div className="loading-simple">Chargement des annonces...</div>;
     }
 
-    const displayAnnouncements = announcements.length > 0 ? announcements : [
-        { id: 1, type: 'info', created_at: new Date().toISOString(), title: 'Répétition générale', content: 'N\'oubliez pas vos chemises blanches pour l\'enregistrement de samedi matin à 9h00.' },
-    ];
+    if (error) {
+        return (
+            <div className="status-card glass-panel">
+                <p className="status-text">{error}</p>
+                <button type="button" className="btn btn-primary" onClick={fetchAnnouncements}>Réessayer</button>
+            </div>
+        );
+    }
+
+    if (announcements.length === 0) {
+        return (
+            <div className="status-card glass-panel">
+                <p className="status-text">Aucune annonce pour le moment.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="announcements-timeline">
-            {displayAnnouncements.map(ann => (
+            {announcements.map(ann => (
                 <div key={ann.id} className="announcement-card glass-panel">
                     <div className="ann-icon">
                         {getIcon(ann.type || 'info')}

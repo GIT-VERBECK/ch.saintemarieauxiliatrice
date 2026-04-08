@@ -6,20 +6,24 @@ import { getPartitions } from '../../services/dashboard.service';
 const DashboardScores = () => {
     const [scores, setScores] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [openingId, setOpeningId] = useState(null);
+
+    const fetchScores = async () => {
+        try {
+            setLoading(true);
+            setError('');
+            const data = await getPartitions();
+            setScores(data || []);
+        } catch (error) {
+            console.error("Failed to fetch scores", error);
+            setError("Impossible de charger les partitions.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchScores = async () => {
-            try {
-                setLoading(true);
-                const data = await getPartitions();
-                setScores(data);
-            } catch (error) {
-                console.error("Failed to fetch scores", error);
-                // On peut garder les scores mockés en cas d'erreur ou d'absence de données
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchScores();
     }, []);
 
@@ -27,16 +31,36 @@ const DashboardScores = () => {
         return <div className="loading-simple">Chargement des partitions...</div>;
     }
 
-    // Données de secours si la table est vide
-    const displayScores = scores.length > 0 ? scores : [
-        { id: 1, title: 'Laudemus Virginem', category: 'Liturgie', created_at: '2024-04-02' },
-        { id: 2, title: 'Missa Brevis', category: 'Classique', created_at: '2024-03-28' },
-        { id: 3, title: 'Ave Maria - Arcadelt', category: 'Soli', created_at: '2024-03-15' },
-    ];
+    if (error) {
+        return (
+            <div className="status-card glass-panel">
+                <p className="status-text">{error}</p>
+                <button type="button" className="btn btn-primary" onClick={fetchScores}>Réessayer</button>
+            </div>
+        );
+    }
+
+    if (scores.length === 0) {
+        return (
+            <div className="status-card glass-panel">
+                <p className="status-text">Aucune partition disponible pour le moment.</p>
+            </div>
+        );
+    }
+
+    const handleOpen = (score) => {
+        if (!score.attachment_url) {
+            toast.error('Lien non disponible');
+            return;
+        }
+        setOpeningId(score.id);
+        window.open(score.attachment_url, '_blank');
+        setTimeout(() => setOpeningId(null), 300);
+    };
 
     return (
         <div className="scores-grid">
-            {displayScores.map(score => (
+            {scores.map(score => (
                 <div key={score.id} className="score-card glass-panel">
                     <div className="score-icon">
                         <Music size={24} />
@@ -50,14 +74,16 @@ const DashboardScores = () => {
                         <button 
                             className="icon-btn" 
                             title="Ouvrir" 
-                            onClick={() => score.attachment_url ? window.open(score.attachment_url, '_blank') : toast.error('Lien non disponible')}
+                            onClick={() => handleOpen(score)}
+                            disabled={openingId === score.id}
                         >
                             <ExternalLink size={18} />
                         </button>
                         <button 
                             className="icon-btn primary" 
                             title="Télécharger"
-                            onClick={() => score.attachment_url ? window.open(score.attachment_url, '_blank') : toast.error('Lien de téléchargement non disponible')}
+                            onClick={() => handleOpen(score)}
+                            disabled={openingId === score.id}
                         >
                             <Download size={18} />
                         </button>
