@@ -14,7 +14,7 @@ import AdminPartitions from './admin/AdminPartitions';
 import AdminEvents from './admin/AdminEvents';
 import AdminAnnouncements from './admin/AdminAnnouncements';
 import SEO from '../components/ui/SEO';
-import { getDashboardOverview } from '../services/dashboard.service';
+import { getDashboardOverview, getDashboardPreferences, updateDashboardPreferences } from '../services/dashboard.service';
 import '../styles/Dashboard.css';
 
 // Layout global pour les sous-vues du dashboard
@@ -96,6 +96,12 @@ const Overview = ({ data, loading, error, onRetry }) => {
         );
     }
 
+    const isAdminView = user?.role === 'Admin' || user?.role === 'Choir_Master';
+    const assignedPartitions = (data?.recentPartitions || []).filter((item) => {
+      if (!item.voice_type || item.voice_type === 'Tous') return true;
+      return item.voice_type === user?.voice_type;
+    });
+
     return (
         <SubViewLayout 
             title={`Heureux de vous revoir, ${user?.full_name?.split(' ')[0] || 'Choriste'} ! 👋`}
@@ -148,6 +154,39 @@ const Overview = ({ data, loading, error, onRetry }) => {
                            <span className="stat-l">Choristes</span>
                         </div>
                     </div>
+                </div>
+
+                <div className="role-panel-row">
+                    {isAdminView ? (
+                        <>
+                            <div className="role-panel-card glass-panel">
+                                <h3>Vue administration</h3>
+                                <p>Accès rapide aux actions de gestion.</p>
+                                <div className="role-actions">
+                                    <button type="button" className="btn btn-primary" onClick={() => navigate('/dashboard/admin/events')}>Programmer un événement</button>
+                                    <button type="button" className="btn btn-ghost" onClick={() => navigate('/dashboard/admin/announcements')}>Modérer les annonces</button>
+                                </div>
+                            </div>
+                            <div className="role-panel-card glass-panel">
+                                <h3>Métriques rapides</h3>
+                                <p>{data?.stats?.totalMembers || 0} membres, {data?.stats?.totalPartitions || 0} partitions.</p>
+                                <button type="button" className="btn btn-link" onClick={() => navigate('/dashboard/admin/members')}>Voir la gestion des membres</button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="role-panel-card glass-panel">
+                                <h3>Prochaines répétitions</h3>
+                                <p>Consultez et préparez votre semaine chorale.</p>
+                                <button type="button" className="btn btn-primary" onClick={() => navigate('/dashboard/calendar')}>Ouvrir l'agenda</button>
+                            </div>
+                            <div className="role-panel-card glass-panel">
+                                <h3>Partitions assignées ({user?.voice_type || 'Tous'})</h3>
+                                <p>{assignedPartitions.length} partition(s) correspondant à votre pupitre.</p>
+                                <button type="button" className="btn btn-link" onClick={() => navigate('/dashboard/scores')}>Voir mes partitions</button>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* TWO COLUMN CONTENT */}
@@ -205,10 +244,19 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchScope, setSearchScope] = useState('all');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [readAnnouncementIds, setReadAnnouncementIds] = useState([]);
+  const [favoriteScoreIds, setFavoriteScoreIds] = useState([]);
+  const [lastOpenedScore, setLastOpenedScore] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const canAccessAdmin = user?.role === 'Admin' || user?.role === 'Choir_Master';
+  const unreadCount = useMemo(() => {
+    const ids = new Set(readAnnouncementIds);
+    return (dashboardData?.announcements || []).filter((ann) => !ids.has(ann.id)).length;
+  }, [dashboardData?.announcements, readAnnouncementIds]);
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -229,23 +277,61 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        const prefs = await getDashboardPreferences();
+        setReadAnnouncementIds(prefs.readAnnouncementIds || []);
+        setFavoriteScoreIds(prefs.favoriteScoreIds || []);
+        setLastOpenedScore(prefs.lastOpenedScore || null);
+      } catch {
+        // Fallback localStorage for compatibility
+        try {
+          const readRaw = localStorage.getItem('sma_read_announcements');
+          const favRaw = localStorage.getItem('sma_favorite_scores');
+          const lastRaw = localStorage.getItem('sma_last_opened_score');
+          setReadAnnouncementIds(readRaw ? JSON.parse(readRaw) : []);
+          setFavoriteScoreIds(favRaw ? JSON.parse(favRaw) : []);
+          setLastOpenedScore(lastRaw ? JSON.parse(lastRaw) : null);
+        } catch {
+          setReadAnnouncementIds([]);
+          setFavoriteScoreIds([]);
+          setLastOpenedScore(null);
+        }
+      }
+    };
+    fetchPreferences();
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      updateDashboardPreferences({ readAnnouncementIds, favoriteScoreIds, lastOpenedScore }).catch(() => {
+        localStorage.setItem('sma_read_announcements', JSON.stringify(readAnnouncementIds));
+        localStorage.setItem('sma_favorite_scores', JSON.stringify(favoriteScoreIds));
+        localStorage.setItem('sma_last_opened_score', JSON.stringify(lastOpenedScore));
+      });
+    }, 400);
+    return () => clearTimeout(t);
+  }, [readAnnouncementIds, favoriteScoreIds, lastOpenedScore]);
+
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const searchableEntries = useMemo(() => {
     if (!dashboardData) return [];
 
     const entries = [
-      { label: 'tableau de bord', route: '/dashboard', keywords: ['accueil', 'overview', 'dashboard'] },
-      { label: 'agenda chorale', route: '/dashboard/calendar', keywords: ['agenda', 'calendrier', 'event', 'repetition'] },
-      { label: 'annonces', route: '/dashboard/announcements', keywords: ['annonce', 'news', 'actualite', 'notification'] },
-      { label: 'profil', route: '/dashboard/profile', keywords: ['profil', 'compte', 'utilisateur'] },
-      { label: 'partitions', route: '/dashboard/scores', keywords: ['partition', 'score', 'musique', 'bibliotheque'] },
+      { label: 'Tableau de bord', route: '/dashboard', kind: 'pages', keywords: ['accueil', 'overview', 'dashboard'] },
+      { label: 'Agenda chorale', route: '/dashboard/calendar', kind: 'pages', keywords: ['agenda', 'calendrier', 'event', 'repetition'] },
+      { label: 'Annonces', route: '/dashboard/announcements', kind: 'pages', keywords: ['annonce', 'news', 'actualite', 'notification'] },
+      { label: 'Profil', route: '/dashboard/profile', kind: 'pages', keywords: ['profil', 'compte', 'utilisateur'] },
+      { label: 'Partitions', route: '/dashboard/scores', kind: 'pages', keywords: ['partition', 'score', 'musique', 'bibliotheque'] },
     ];
 
     (dashboardData.recentPartitions || []).forEach((partition) => {
       entries.push({
         label: partition.title,
         route: '/dashboard/scores',
+        kind: 'partitions',
         keywords: [partition.title, partition.composer, partition.category].filter(Boolean),
       });
     });
@@ -254,6 +340,7 @@ const Dashboard = () => {
       entries.push({
         label: announcement.title,
         route: '/dashboard/announcements',
+        kind: 'annonces',
         keywords: [announcement.title, announcement.content, announcement.type].filter(Boolean),
       });
     });
@@ -262,6 +349,7 @@ const Dashboard = () => {
       entries.push({
         label: dashboardData.nextEvent.title || 'Prochain événement',
         route: '/dashboard/calendar',
+        kind: 'events',
         keywords: [
           dashboardData.nextEvent.title,
           dashboardData.nextEvent.location,
@@ -273,6 +361,30 @@ const Dashboard = () => {
     return entries;
   }, [dashboardData]);
 
+  const filteredSearchEntries = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    const scoped = searchScope === 'all' ? searchableEntries : searchableEntries.filter((entry) => entry.kind === searchScope);
+
+    if (!query) return scoped.slice(0, 8);
+
+    return scoped
+      .filter((entry) => {
+        const inLabel = entry.label?.toLowerCase().includes(query);
+        const inKeywords = (entry.keywords || []).some((k) => String(k).toLowerCase().includes(query));
+        return inLabel || inKeywords;
+      })
+      .slice(0, 10);
+  }, [searchableEntries, searchQuery, searchScope]);
+
+  const groupedResults = useMemo(() => {
+    return filteredSearchEntries.reduce((acc, item) => {
+      const key = item.kind || 'pages';
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(item);
+      return acc;
+    }, {});
+  }, [filteredSearchEntries]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const query = searchQuery.trim().toLowerCase();
@@ -282,11 +394,7 @@ const Dashboard = () => {
       return;
     }
 
-    const match = searchableEntries.find((entry) => {
-      const inLabel = entry.label?.toLowerCase().includes(query);
-      const inKeywords = (entry.keywords || []).some((k) => String(k).toLowerCase().includes(query));
-      return inLabel || inKeywords;
-    });
+    const match = filteredSearchEntries[0];
 
     if (!match) {
       toast.error(`Aucun résultat pour "${searchQuery}".`);
@@ -294,7 +402,33 @@ const Dashboard = () => {
     }
 
     navigate(match.route);
+    setIsSearchOpen(false);
     toast.success(`Ouverture : ${match.label}`);
+  };
+
+  const handleResultClick = (item) => {
+    navigate(item.route);
+    setSearchQuery(item.label);
+    setIsSearchOpen(false);
+  };
+
+  const markAllAnnouncementsAsRead = useCallback(() => {
+    const allIds = (dashboardData?.announcements || []).map((ann) => ann.id);
+    setReadAnnouncementIds(allIds);
+    toast.success('Toutes les notifications sont marquées comme lues.');
+  }, [dashboardData?.announcements]);
+
+  const toggleAnnouncementRead = useCallback((id) => {
+    setReadAnnouncementIds((prev) => (
+      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
+    ));
+  }, []);
+
+  const groupLabel = {
+    partitions: 'Partitions',
+    events: 'Événements',
+    annonces: 'Annonces',
+    pages: 'Pages',
   };
 
   return (
@@ -310,24 +444,82 @@ const Dashboard = () => {
             <button className="menu-toggle-btn" onClick={toggleSidebar}>
               <Menu size={24} />
             </button>
-            <form className="search-bar-mini" onSubmit={handleSearchSubmit}>
+            <form
+              className="search-bar-mini"
+              onSubmit={handleSearchSubmit}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget)) {
+                  setIsSearchOpen(false);
+                }
+              }}
+            >
               <Search size={18} />
               <input
                 type="text"
                 placeholder="Rechercher une partition, un événement..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchOpen(true)}
               />
               <button type="submit" className="search-submit-btn" aria-label="Lancer la recherche">
                 Aller
               </button>
+              {isSearchOpen && (
+                <div className="search-results-popover">
+                  <div className="search-filter-row">
+                    {[
+                      { id: 'all', label: 'Tout' },
+                      { id: 'partitions', label: 'Partitions' },
+                      { id: 'events', label: 'Événements' },
+                      { id: 'annonces', label: 'Annonces' },
+                      { id: 'pages', label: 'Pages' },
+                    ].map((scope) => (
+                      <button
+                        key={scope.id}
+                        type="button"
+                        className={`search-scope-chip ${searchScope === scope.id ? 'active' : ''}`}
+                        onClick={() => setSearchScope(scope.id)}
+                      >
+                        {scope.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {Object.keys(groupedResults).length === 0 ? (
+                    <div className="search-empty">Aucun résultat.</div>
+                  ) : (
+                    <div className="search-results-list">
+                      {Object.entries(groupedResults).map(([group, items]) => (
+                        <div key={group}>
+                          <div className="search-group-title">{groupLabel[group] || group}</div>
+                          {items.map((item) => (
+                            <button
+                              key={`${group}-${item.label}`}
+                              type="button"
+                              className="search-result-item"
+                              onClick={() => handleResultClick(item)}
+                            >
+                              {item.label}
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </form>
           </div>
 
           <div className="nav-right">
             <button className="nav-action-btn" title="Notifications" onClick={() => navigate('/dashboard/announcements')}>
               <Bell size={20} />
-              <span className="notification-dot" />
+              {unreadCount > 0 && (
+                <>
+                  <span className="notification-dot" />
+                  <span className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                </>
+              )}
             </button>
             <div className="nav-user-profile" onClick={() => navigate('/dashboard/profile')}>
               <div className="user-avatar-mini">
@@ -346,9 +538,32 @@ const Dashboard = () => {
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/" element={<Overview data={dashboardData} loading={isLoading} error={loadError} onRetry={fetchDashboardData} />} />
-              <Route path="/scores" element={<SubViewLayout title="Ma Bibliothèque" subtitle="Accédez à toutes vos partitions et ressources audio."><DashboardScores /></SubViewLayout>} />
+              <Route
+                path="/scores"
+                element={
+                  <SubViewLayout title="Ma Bibliothèque" subtitle="Accédez à toutes vos partitions et ressources audio.">
+                    <DashboardScores
+                      favorites={favoriteScoreIds}
+                      onFavoritesChange={setFavoriteScoreIds}
+                      lastOpenedScore={lastOpenedScore}
+                      onLastOpenedChange={setLastOpenedScore}
+                    />
+                  </SubViewLayout>
+                }
+              />
               <Route path="/calendar" element={<SubViewLayout title="Agenda" subtitle="Ne manquez aucune répétition ou célébration."><DashboardCalendar /></SubViewLayout>} />
-              <Route path="/announcements" element={<SubViewLayout title="Tableau d'affichage" subtitle="Les dernières communications de la direction chorale."><DashboardAnnouncements /></SubViewLayout>} />
+              <Route
+                path="/announcements"
+                element={
+                  <SubViewLayout title="Tableau d'affichage" subtitle="Les dernières communications de la direction chorale.">
+                    <DashboardAnnouncements
+                      readIds={readAnnouncementIds}
+                      onToggleRead={toggleAnnouncementRead}
+                      onMarkAllRead={markAllAnnouncementsAsRead}
+                    />
+                  </SubViewLayout>
+                }
+              />
               <Route path="/profile" element={
                 <SubViewLayout title="Mon Profil" subtitle="Gérez vos informations personnelles et préférences.">
                   <ProfileView />
