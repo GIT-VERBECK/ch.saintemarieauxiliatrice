@@ -18,7 +18,7 @@ const EventCard = ({ image, date, title, description, index }) => (
       <h3>{title}</h3>
       <p>{description}</p>
       <button className="btn btn-ghost" style={{ width: '100%', fontSize: '0.8125rem', padding: '8px' }}>
-        Détails de l'événement <ChevronRight size={14} />
+        Détails de l&apos;événement <ChevronRight size={14} />
       </button>
     </div>
   </ScrollReveal>

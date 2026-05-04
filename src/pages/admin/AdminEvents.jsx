@@ -69,7 +69,7 @@ const AdminEvents = () => {
                     <form onSubmit={handleSubmit}>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Titre de l'événement</label>
+                                <label>Titre de l&apos;événement</label>
                                 <input required value={newEvent.title} onChange={(e) => setNewEvent({...newEvent, title: e.target.value})} placeholder="Ex: Répétition Générale" />
                             </div>
                             <div className="form-group">

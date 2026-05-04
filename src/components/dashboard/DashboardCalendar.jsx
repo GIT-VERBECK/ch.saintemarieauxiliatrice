@@ -27,7 +27,7 @@ const DashboardCalendar = () => {
     }, []);
 
     if (loading) {
-        return <div className="loading-simple">Chargement de l'agenda...</div>;
+        return <div className="loading-simple">Chargement de l&apos;agenda...</div>;
     }
 
     if (error) {

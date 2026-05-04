@@ -84,7 +84,7 @@ const AdminPartitions = () => {
                     <form onSubmit={handleAddPartition}>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Titre de l'œuvre</label>
+                                <label>Titre de l&apos;œuvre</label>
                                 <input required value={newPartition.title} onChange={(e) => setNewPartition({...newPartition, title: e.target.value})} />
                             </div>
                             <div className="form-group">
