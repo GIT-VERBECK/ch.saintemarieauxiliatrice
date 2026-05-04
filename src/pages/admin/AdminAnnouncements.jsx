@@ -66,7 +66,7 @@ const AdminAnnouncements = () => {
                 <div className="admin-form glass-panel">
                     <form onSubmit={handleSubmit}>
                         <div className="form-group mb-4">
-                            <label>Titre de l'annonce</label>
+                            <label>Titre de l&apos;annonce</label>
                             <input required value={newAnn.title} onChange={(e) => setNewAnn({...newAnn, title: e.target.value})} placeholder="Titre court et clair" />
                         </div>
                         <div className="form-group mb-4">
@@ -74,7 +74,7 @@ const AdminAnnouncements = () => {
                             <textarea required rows="3" value={newAnn.content} onChange={(e) => setNewAnn({...newAnn, content: e.target.value})} placeholder="Votre message pour les choristes..."></textarea>
                         </div>
                         <div className="form-group mb-4">
-                            <label>Type d'annonce</label>
+                            <label>Type d&apos;annonce</label>
                             <select value={newAnn.type} onChange={(e) => setNewAnn({...newAnn, type: e.target.value})}>
                                 <option value="info">Information (Bleu)</option>
                                 <option value="alert">Alerte / Important (Or)</option>

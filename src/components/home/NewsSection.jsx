@@ -34,7 +34,7 @@ const NewsSection = () => {
                 icon={<Megaphone size={22} />}
                 meta="Mardi 12 Mars"
                 index={0}
-                title="Audition : Session Voix d'Hommes"
+                title="Audition : Session Voix d&apos;Hommes"
                 description="Nous recherchons spécifiquement des barytons et des basses pour la saison prochaine."
               />
               <AnnouncementItem 
@@ -42,7 +42,7 @@ const NewsSection = () => {
                 meta="Lundi 4 Mars"
                 index={1}
                 title="Bibliothèque de Partitions"
-                description="Nouveau : les partitions numériques sont accessibles via l'espace membre."
+                description="Nouveau : les partitions numériques sont accessibles via l&apos;espace membre."
               />
             </div>
             <ScrollReveal delay={0.4}>
@@ -62,7 +62,7 @@ const NewsSection = () => {
             <div style={{ background: 'var(--bg-primary)', padding: '40px', borderRadius: '24px', border: '1px solid var(--border-subtle)', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
               <Sparkles size={32} color="var(--brand-accent)" style={{ marginBottom: '24px' }} />
               <blockquote style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '32px', fontStyle: 'italic', lineHeight: '1.5' }}>
-                "La musique est le langage de l'âme. Nos voix ne sont que les instruments d'une harmonie qui nous dépasse."
+                &quot;La musique est le langage de l&apos;âme. Nos voix ne sont que les instruments d&apos;une harmonie qui nous dépasse.&quot;
               </blockquote>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'var(--brand-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.2rem' }}>JD</div>

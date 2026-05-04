@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LogOut, User as UserIcon, Phone, Music, CircleUser, Mail, Calendar, Camera } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 const ProfileView = () => {
@@ -97,7 +97,7 @@ const ProfileView = () => {
                                 disabled={true}
                                 className="readonly"
                             />
-                            <span className="input-hint">L'email ne peut pas être modifié pour le moment.</span>
+                            <span className="input-hint">L&apos;email ne peut pas être modifié pour le moment.</span>
                         </div>
 
                         <div className="input-field-group">
@@ -165,7 +165,7 @@ const ProfileView = () => {
 
                     <div className="account-safety-card glass-panel">
                         <h3>Sécurité</h3>
-                        <p>Dernière connexion: Aujourd'hui</p>
+                        <p>Dernière connexion: Aujourd&apos;hui</p>
                         <button type="button" className="btn btn-ghost btn-sm" onClick={handlePasswordChange}>
                             Changer mon mot de passe
                         </button>

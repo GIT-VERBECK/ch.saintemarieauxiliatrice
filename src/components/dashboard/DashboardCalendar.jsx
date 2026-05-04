@@ -22,7 +22,7 @@ const DashboardCalendar = () => {
     }, []);
 
     if (loading) {
-        return <div className="loading-simple">Chargement de l'agenda...</div>;
+        return <div className="loading-simple">Chargement de l&apos;agenda...</div>;
     }
 
     const displayEvents = events.length > 0 ? events : [
@@ -30,10 +30,7 @@ const DashboardCalendar = () => {
         { id: 2, title: 'Messe du Dimanche', event_date: '2024-04-14', location: 'Grande Cathédrale', time: '09:00' },
     ];
 
-    const formatDate = (dateStr) => {
-        const options = { weekday: 'long', day: 'numeric', month: 'long' };
-        return new Intl.DateTimeFormat('fr-FR', options).format(new Date(dateStr));
-    };
+
 
     return (
         <div className="calendar-timeline">

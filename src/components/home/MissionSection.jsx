@@ -87,7 +87,7 @@ const MissionSection = () => {
             <div className="mission-stats-floating glass-panel">
               <div className="stat-floater">
                 <div className="stat-val">17</div>
-                <div className="stat-txt">Années d'Excellence</div>
+                <div className="stat-txt">Années d&apos;Excellence</div>
               </div>
               <div className="stat-separator"></div>
               <div className="stat-floater">
