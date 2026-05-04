@@ -45,9 +45,9 @@ const Header = () => {
           <div className="header-content">
             <Link to="/" className="logo-group">
               <div className="logo-icon">
-                <img src="/src/assets/images/icon.png" alt="Logo" width={66} height={45} style={{ borderRadius: 'var(--radius-md)' }}/>
+                <img src="/src/assets/images/icon.png" alt="Logo" />
               </div>
-              <span className="logo-text" style={{ marginLeft: '-.5rem' }}>SMA</span>
+              <span className="logo-text">SMA</span>
             </Link>
             
             <nav className="nav-desktop"> 
@@ -72,8 +72,8 @@ const Header = () => {
             <div className="actions-group"> 
         
               <ThemeToggle />
-              <Link to="/register" className="btn btn-ghost">Créer un compte</Link>
-              <Link to="/login" className="btn btn-primary">Se Connecter</Link>
+              <Link to="/register" className="btn btn-ghost btn-sm">Créer un compte</Link>
+              <Link to="/login" className="btn btn-primary btn-sm">Se Connecter</Link>
             </div>
 
             <button 

@@ -119,8 +119,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 42px;
-  padding: 0 16px;
+  padding: 10px 20px;
   font-weight: 600;
   font-size: 0.9375rem;
   border-radius: var(--radius-md);
@@ -135,6 +134,23 @@ body {
 .btn:focus-visible {
   outline: 2px solid rgba(var(--brand-primary-rgb), 0.35);
   outline-offset: 2px;
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  border-radius: 8px;
+}
+
+.btn-md {
+  padding: 10px 20px;
+  font-size: 0.9375rem;
+}
+
+.btn-lg {
+  padding: 14px 28px;
+  font-size: 1rem;
+  border-radius: var(--radius-lg);
 }
 
 .btn-primary {
