@@ -103,3 +103,56 @@ export const getEvents = async () => {
         throw error;
     }
 };
+
+/**
+ * Récupère les préférences dashboard de l'utilisateur
+ */
+export const getDashboardPreferences = async () => {
+    try {
+        const token = localStorage.getItem('sma_token');
+        const response = await fetch(`${API_URL}/dashboard/preferences`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Erreur lors du chargement des préférences dashboard');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Dashboard Preferences Service Error:", error);
+        throw error;
+    }
+};
+
+/**
+ * Met à jour les préférences dashboard de l'utilisateur
+ */
+export const updateDashboardPreferences = async (payload) => {
+    try {
+        const token = localStorage.getItem('sma_token');
+        const response = await fetch(`${API_URL}/dashboard/preferences`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Erreur lors de la mise à jour des préférences dashboard');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Dashboard Preferences Update Error:", error);
+        throw error;
+    }
+};
