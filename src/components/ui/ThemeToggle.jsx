@@ -11,21 +11,6 @@ const ThemeToggle = () => {
       onClick={toggleTheme}
       className="theme-toggle"
       aria-label={`Passer en mode ${theme === 'light' ? 'sombre' : 'clair'}`}
-      style={{
-        background: 'transparent',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: '50%',
-        width: '40px',
-        height: '40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        color: 'var(--text-main)',
-        position: 'relative',
-        overflow: 'hidden',
-        marginLeft: '1rem'
-      }}
     >
       <AnimatePresence mode="wait">
         <motion.div
